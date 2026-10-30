@@ -1,262 +1,236 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="MFlow is a modern Android music player featuring Material 3 design, dynamic theming, synced lyrics, custom playlists, listening statistics, and a privacy-focused experience.">
-    <meta name="theme-color" content="#080c12">
-    <title>MFlow – Download for Android</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MFlow - Music Player for Android</title>
     <style>
-      :root {
-        --bg-color: #080c12;
-        --text-primary: #ffffff;
-        --text-secondary: #94a3b8;
-        --accent-color: #38bdf8;
-        --accent-hover: #0ea5e9;
-      }
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
-      body {
-        background-color: var(--bg-color);
-        color: var(--text-primary);
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-        line-height: 1.6;
-        padding: 0 16px 48px 16px;
-      }
-      .nav {
-        max-width: 700px;
-        margin: 0 auto;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 24px 8px;
-      }
-      .brand {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-weight: 700;
-        font-size: 20px;
-        letter-spacing: 0.5px;
-      }
-      .dot {
-        width: 10px;
-        height: 10px;
-        background-color: var(--accent-color);
-        border-radius: 50%;
-        display: inline-block;
-      }
-      .version {
-        background: rgba(56, 189, 248, 0.12);
-        color: var(--accent-color);
-        padding: 6px 14px;
-        border-radius: 20px;
-        font-size: 13px;
-        font-weight: 600;
-      }
-      main {
-        max-width: 700px;
-        margin: 0 auto;
-      }
-      .hero {
-        text-align: center;
-        padding: 30px 10px 50px 10px;
-      }
-      .app-icon {
-        width: 100px;
-        height: 100px;
-        border-radius: 24px;
-        margin-bottom: 24px;
-        background: transparent;
-        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
-      }
-      .badge {
-        font-size: 11px;
-        font-weight: 700;
-        letter-spacing: 1.5px;
-        color: var(--accent-color);
-        margin-bottom: 14px;
-      }
-      h1 {
-        font-size: 40px;
-        font-weight: 800;
-        line-height: 1.15;
-        margin-bottom: 20px;
-      }
-      h1 span {
-        color: var(--accent-color);
-      }
-      .hero p {
-        color: var(--text-secondary);
-        max-width: 540px;
-        margin: 0 auto 32px auto;
-        font-size: 15px;
-        line-height: 1.7;
-      }
-      .download {
-        display: inline-block;
-        background: var(--accent-color);
-        color: #080c12;
-        padding: 15px 36px;
-        border-radius: 14px;
-        text-decoration: none;
-        font-weight: 700;
-        font-size: 16px;
-        transition: background 0.2s, transform 0.2s;
-        box-shadow: 0 4px 20px rgba(56, 189, 248, 0.3);
-      }
-      .download:hover {
-        background: var(--accent-hover);
-        transform: translateY(-2px);
-      }
-      .small {
-        margin-top: 16px;
-        font-size: 13px;
-        color: var(--text-secondary);
-      }
-      .section-title {
-        font-size: 26px;
-        font-weight: 800;
-        margin-bottom: 10px;
-        text-align: left;
-      }
-      .section-desc {
-        color: var(--text-secondary);
-        font-size: 15px;
-        margin-bottom: 28px;
-        text-align: left;
-      }
-      .features {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 16px;
-      }
-      .feature-card {
-        background: rgba(255, 255, 255, 0.02);
-        border: 1px solid rgba(255, 255, 255, 0.06);
-        padding: 22px;
-        border-radius: 18px;
-        text-align: left;
-      }
-      .feature-card b {
-        display: block;
-        font-size: 16px;
-        margin-bottom: 6px;
-        color: var(--text-primary);
-      }
-      .feature-card p {
-        color: var(--text-secondary);
-        font-size: 14px;
-        margin: 0;
-        line-height: 1.5;
-      }
-      footer {
-        text-align: center;
-        margin-top: 50px;
-        color: var(--text-secondary);
-        font-size: 13px;
-        border-top: 1px solid rgba(255, 255, 255, 0.04);
-        padding-top: 20px;
-      }
+        :root {
+            --bg-color: #080c12;
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --accent-color: #38bdf8;
+            --accent-hover: #0ea5e9;
+            --border-color: rgba(255, 255, 255, 0.08);
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 40px 16px;
+        }
+        .container {
+            max-width: 750px;
+            margin: 0 auto;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .app-icon {
+            width: 120px;
+            height: 120px;
+            border-radius: 28px;
+            background: transparent;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            margin-bottom: 10px;
+        }
+        h1 {
+            font-size: 42px;
+            font-weight: 800;
+            margin: 10px 0 20px 0;
+            letter-spacing: -0.5px;
+        }
+        .description {
+            color: var(--text-secondary);
+            font-size: 16px;
+            max-width: 650px;
+            margin: 0 auto 10px auto;
+            line-height: 1.7;
+        }
+        .tagline {
+            color: var(--accent-color);
+            font-style: italic;
+            font-size: 15px;
+            margin-bottom: 30px;
+        }
+        .download-btn {
+            display: inline-block;
+            background: var(--accent-color);
+            color: #080c12;
+            padding: 14px 32px;
+            border-radius: 14px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 16px;
+            margin: 20px 0 10px 0;
+            transition: background 0.2s, transform 0.2s;
+            box-shadow: 0 4px 20px rgba(56, 189, 248, 0.3);
+        }
+        .download-btn:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+        }
+        .version-info {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+        }
+        hr {
+            border: 0;
+            height: 1px;
+            background: var(--border-color);
+            margin: 40px 0;
+        }
+        h2 {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin-bottom: 16px;
+            font-size: 15px;
+            color: var(--text-secondary);
+        }
+        li strong {
+            color: var(--text-primary);
+        }
+        /* جدول لقطات الشاشة المتناسق */
+        .screenshots-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .screenshots-table td {
+            padding: 10px;
+            text-align: center;
+            width: 33.333%;
+        }
+        .screenshots-table img {
+            width: 100%;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+        }
+        .screenshots-table b {
+            display: block;
+            margin-top: 8px;
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
     </style>
-  </head>
-  <body>
-    <header class="nav">
-      <div class="brand">
-        <span class="dot"></span>
-        MFlow
-      </div>
-      <span class="version" id="versionBadge">Loading...</span>
-    </header>
+</head>
+<body>
 
-    <main>
-      <!-- Hero -->
-      <section class="hero">
-        <img
-          src="https://raw.githubusercontent.com/Hance-PDv/Music-Flow/refs/heads/main/screenshots/app_icon.png"
-          alt="MFlow App Icon"
-          class="app-icon"
-        >
-        <div class="badge">MUSIC PLAYER FOR ANDROID</div>
-        <h1>
-          Your music.<br>
-          <span>Your flow.</span>
-        </h1>
-        <p>
-          Welcome to MFlow, your ultimate offline music companion
-          designed with a modern Material 3 aesthetic and dark-mode
-          elegance. Take full control of your local audio library
-          with a smooth, ad-free, and privacy-focused experience.
-        </p>
-        <a class="download" id="downloadBtn" href="https://github.com/Hance-PDv/Music-Flow/releases" target="_blank">
-          Download MFlow
-        </a>
-        <p class="small" id="releaseInfo">
-          Android APK &bull; Free &bull; No ads &bull; Open Source
-        </p>
-      </section>
-
-      <!-- Key Features -->
-      <section>
-        <h2 class="section-title">Everything your music needs.</h2>
-        <p class="section-desc">
-          Discover a better way to enjoy your music with powerful features, a refined interface, and complete control over your listening experience.
-        </p>
-        <div class="features">
-          <div class="feature-card">
-            <b>Seamless Local Playback</b>
-            <p>Instantly scan, organize, and play audio files stored on your Android device, with crisp audio quality.</p>
-          </div>
-          <div class="feature-card">
-            <b>Listening Statistics</b>
-            <p>Track your listening habits, discover your most played tracks, and explore your overall listening statistics.</p>
-          </div>
-          <div class="feature-card">
-            <b>Favorites &amp; Custom Playlists</b>
-            <p>Keep your favorite tracks close and create custom playlists tailored to your mood and musical taste.</p>
-          </div>
-          <div class="feature-card">
-            <b>Smart Music Features</b>
-            <p>Enjoy real-time synced lyrics, a convenient mini-player for quick playback control, and a customizable sleep timer.</p>
-          </div>
-          <div class="feature-card">
-            <b>Dynamic Material 3 Design</b>
-            <p>Experience a fluid interface with dynamic theming, smooth animations, and a polished dark-first design.</p>
-          </div>
-          <div class="feature-card">
-            <b>Privacy First</b>
-            <p>Your music library and listening habits stay private on your device, with an offline-first experience.</p>
-          </div>
+    <div class="container">
+        <!-- الأيقونة والعنوان -->
+        <div class="text-center">
+            <img src="https://raw.githubusercontent.com/Hance-PDv/Music-Flow/refs/heads/main/screenshots/app_icon.png" width="120" alt="MFlow Icon" class="app-icon" />
+            <h1>MFlow</h1>
+            <p class="description">
+                <b>MFlow is a refined, full-featured music player designed to give you total control over your audio library. Wrapped in a modern Liquid Glass aesthetic, it delivers uncompromised sound performance through a smooth, ad-free interface tailored completely to your listening preferences.</b>
+            </p>
+            <p class="tagline">
+                <i>MFlow: Your music, your way.</i>
+            </p>
+            
+            <!-- زر التحميل الديناميكي -->
+            <div>
+                <a id="downloadBtn" href="https://github.com/Hance-PDv/Music-Flow/releases" class="download-btn" target="_blank">Download MFlow</a>
+            </div>
+            <div class="version-info">
+                Latest Version: <span id="versionText" style="color: var(--accent-color); font-weight: bold;">Loading...</span> &bull; Free &bull; No Ads &bull; Open Source
+            </div>
         </div>
-      </section>
-    </main>
 
-    <footer>
-      &copy; 2026 MFlow. All rights reserved.
-    </footer>
+        <hr />
+
+        <!-- الميزات (Features) -->
+        <section>
+            <h2>Features</h2>
+            <ul>
+                <li>⚡ <strong>High-Fidelity Audio:</strong> Delivers crisp, rich sound playback with dynamic audio output for an immersive listening experience.</li>
+                <li>⚡ <strong>Real-Time Synced Lyrics:</strong> Displays perfectly synchronized lyrics with smooth line-by-line scrolling that tracks your song precisely.</li>
+                <li>⚡ <strong>Smart Sleep Timer:</strong> Set custom countdowns with quick increment controls (±5 min) to auto-stop playback seamlessly.</li>
+                <li>⚡ <strong>Instant Favorites:</strong> Save and access your most-cherished tracks instantly with a single tap.</li>
+                <li>⚡ <strong>Custom Playlists:</strong> Effortlessly create, edit, and organize personalized song collections tailored to your vibe.</li>
+                <li>⚡ <strong>Listening Insights:</strong> Track your music habits with detailed stats, including total listen time, top-played tracks, and daily trends.</li>
+            </ul>
+        </section>
+
+        <hr />
+
+        <!-- لقطات الشاشة (Screenshots) -->
+        <section>
+            <h2>Screenshots</h2>
+            <table class="screenshots-table">
+                <tr>
+                    <td>
+                        <img src="https://raw.githubusercontent.com/Hance-PDv/Music-Flow/refs/heads/main/screenshots/1MFlow.png" alt="Home" />
+                        <b>Home</b>
+                    </td>
+                    <td>
+                        <img src="https://raw.githubusercontent.com/Hance-PDv/Music-Flow/refs/heads/main/screenshots/2MFlow.png" alt="Player" />
+                        <b>Player</b>
+                    </td>
+                    <td>
+                        <img src="https://raw.githubusercontent.com/Hance-PDv/Music-Flow/refs/heads/main/screenshots/3MFlow.png" alt="Lyrics" />
+                        <b>Lyrics</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <img src="https://raw.githubusercontent.com/Hance-PDv/Music-Flow/refs/heads/main/screenshots/4MFlow.png" alt="Library" />
+                        <b>Library</b>
+                    </td>
+                    <td>
+                        <img src="https://raw.githubusercontent.com/Hance-PDv/Music-Flow/refs/heads/main/screenshots/5MFlow.png" alt="Favorite" />
+                        <b>Favorite</b>
+                    </td>
+                    <td>
+                        <img src="https://raw.githubusercontent.com/Hance-PDv/Music-Flow/refs/heads/main/screenshots/6MFlow.png" alt="Stats" />
+                        <b>Stats</b>
+                    </td>
+                </tr>
+            </table>
+        </section>
+
+        <footer>
+            &copy; 2026 MFlow. All rights reserved. Built with GitHub Pages.
+        </footer>
+    </div>
 
     <script>
+        // سحب أحدث إصدار ورابط التحميل مباشرة من غيتهاب
         fetch('https://api.github.com/repos/Hance-PDv/Music-Flow/releases/latest')
             .then(response => response.json())
             .then(data => {
                 const latestVersion = data.tag_name;
-                document.getElementById('versionBadge').innerText = latestVersion;
+                document.getElementById('versionText').innerText = latestVersion;
                 document.getElementById('downloadBtn').innerText = "Download MFlow " + latestVersion;
                 
                 if(data.assets && data.assets.length > 0) {
                     const downloadUrl = data.assets[0].browser_download_url;
-                    document.getElementById('downloadButton').href = downloadUrl;
+                    document.getElementById('downloadBtn').href = downloadUrl;
                 } else {
                     document.getElementById('downloadBtn').href = data.html_url;
                 }
             })
             .catch(err => {
-                document.getElementById('versionBadge').innerText = "v3.1";
+                document.getElementById('versionText').innerText = "Latest";
                 document.getElementById('downloadBtn').href = "https://github.com/Hance-PDv/Music-Flow/releases";
             });
     </script>
-  </body>
+</body>
 </html>
