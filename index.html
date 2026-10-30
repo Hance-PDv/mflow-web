@@ -75,36 +75,6 @@
             background: var(--accent-hover);
             transform: translateY(-2px);
         }
-        
-        /* Progress Bar Styles */
-        .progress-wrapper {
-            display: none;
-            max-width: 320px;
-            margin: 20px auto 0 auto;
-        }
-        .progress-bar-bg {
-            width: 100%;
-            height: 10px;
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 20px;
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-        }
-        .progress-bar-fill {
-            width: 0%;
-            height: 100%;
-            background: linear-gradient(90deg, #38bdf8, #818cf8);
-            border-radius: 20px;
-            transition: width 0.1s ease;
-        }
-        .progress-status {
-            font-size: 13px;
-            color: var(--text-secondary);
-            margin-top: 8px;
-            display: flex;
-            justify-content: space-between;
-        }
-
         hr {
             border: 0;
             height: 1px;
@@ -186,17 +156,6 @@
             <div>
                 <button id="downloadBtn" class="download-btn">Download MFlow</button>
             </div>
-
-            <!-- Progress Bar Section -->
-            <div id="progressWrapper" class="progress-wrapper">
-                <div class="progress-bar-bg">
-                    <div id="progressBarFill" class="progress-bar-fill"></div>
-                </div>
-                <div class="progress-status">
-                    <span id="progressText">Starting...</span>
-                    <span id="progressPercent">0%</span>
-                </div>
-            </div>
         </div>
 
         <hr />
@@ -274,14 +233,10 @@
 
     <script>
         let targetDownloadUrl = "";
-        let apkFileName = "MFlow.apk";
 
         const downloadBtn = document.getElementById('downloadBtn');
-        const progressWrapper = document.getElementById('progressWrapper');
-        const progressBarFill = document.getElementById('progressBarFill');
-        const progressText = document.getElementById('progressText');
-        const progressPercent = document.getElementById('progressPercent');
 
+        // جلب رابط التنزيل المباشر من GitHub API
         fetch('https://api.github.com/repos/Hance-PDv/Music-Flow/releases/latest')
             .then(response => response.json())
             .then(data => {
@@ -290,7 +245,6 @@
                 
                 if (data.assets && data.assets.length > 0) {
                     targetDownloadUrl = data.assets[0].browser_download_url;
-                    apkFileName = data.assets[0].name || `MFlow_${latestVersion}.apk`;
                 } else {
                     targetDownloadUrl = data.html_url;
                 }
@@ -300,67 +254,18 @@
                 targetDownloadUrl = "https://github.com/Hance-PDv/Music-Flow/releases";
             });
 
+        // تنفيذ عملية التنزيل المباشر عبر iframe مخفي دون إعادة توجيه
         downloadBtn.addEventListener('click', () => {
             if (!targetDownloadUrl) return;
 
-            if (!targetDownloadUrl.endsWith('.apk')) {
-                window.location.href = targetDownloadUrl;
-                return;
-            }
+            const hiddenIframe = document.createElement('iframe');
+            hiddenIframe.style.display = 'none';
+            hiddenIframe.src = targetDownloadUrl;
+            document.body.appendChild(hiddenIframe);
 
-            progressWrapper.style.display = "block";
-            downloadBtn.style.pointerEvents = "none";
-            downloadBtn.style.opacity = "0.7";
-
-            const xhr = new XMLHttpRequest();
-            xhr.open('GET', targetDownloadUrl, true);
-            xhr.responseType = 'blob';
-
-            xhr.onprogress = (event) => {
-                if (event.lengthComputable) {
-                    const percentComplete = Math.round((event.loaded / event.total) * 100);
-                    const loadedMB = (event.loaded / (1024 * 1024)).toFixed(1);
-                    const totalMB = (event.total / (1024 * 1024)).toFixed(1);
-
-                    progressBarFill.style.width = percentComplete + '%';
-                    progressPercent.innerText = percentComplete + '%';
-                    progressText.innerText = `${loadedMB} MB / ${totalMB} MB`;
-                } else {
-                    progressText.innerText = "Downloading...";
-                }
-            };
-
-            xhr.onload = () => {
-                if (xhr.status === 200) {
-                    const blob = xhr.response;
-                    const blobUrl = window.URL.createObjectURL(blob);
-                    
-                    const a = document.createElement('a');
-                    a.href = blobUrl;
-                    a.download = apkFileName;
-                    document.body.appendChild(a);
-                    a.click();
-                    a.remove();
-                    window.URL.revokeObjectURL(blobUrl);
-
-                    progressText.innerText = "Completed!";
-                    progressBarFill.style.width = '100%';
-                    progressPercent.innerText = '100%';
-
-                    setTimeout(() => {
-                        downloadBtn.style.pointerEvents = "auto";
-                        downloadBtn.style.opacity = "1";
-                    }, 3000);
-                } else {
-                    window.location.href = targetDownloadUrl;
-                }
-            };
-
-            xhr.onerror = () => {
-                window.location.href = targetDownloadUrl;
-            };
-
-            xhr.send();
+            setTimeout(() => {
+                document.body.removeChild(hiddenIframe);
+            }, 6000);
         });
     </script>
 </body>
