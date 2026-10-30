@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MFlow - Music Player</title>
+    <style>
+        body {
+            background-color: #080c12;
+            color: #ffffff;
+            font-family: sans-serif;
+            text-align: center;
+            padding: 50px 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 30px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+        h1 { font-size: 32px; margin-bottom: 10px; }
+        p { color: #a0aec0; margin-bottom: 30px; }
+        .btn {
+            display: inline-block;
+            background: #4f46e5;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .version {
+            color: #38bdf8;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>MFlow Music Player</h1>
+        <p>Your music, your way. Ad-free, smooth, and lightweight.</p>
+        
+        <div>Latest Version: <span id="versionText" class="version">Loading...</span></div>
+        
+        <a id="downloadButton" href="#" class="btn" target="_blank">Download APK</a>
+    </div>
+
+    <script>
+        // جلب آخر إصدار (Release) تلقائياً من مستودع التطبيق الخاص بك
+        fetch('https://api.github.com/repos/Hance-PDv/Music-Flow/releases/latest')
+            .then(response => response.json())
+            .then(data => {
+                const latestVersion = data.tag_name;
+                document.getElementById('versionText').innerText = latestVersion;
+                
+                if(data.assets && data.assets.length > 0) {
+                    const downloadUrl = data.assets[0].browser_download_url;
+                    document.getElementById('downloadButton').href = downloadUrl;
+                } else {
+                    document.getElementById('downloadButton').href = data.html_url;
+                }
+            })
+            .catch(err => {
+                document.getElementById('versionText').innerText = "v2.3";
+                document.getElementById('downloadButton').href = "https://github.com/Hance-PDv/Music-Flow/releases";
+            });
+    </script>
+</body>
+</html>
