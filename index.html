@@ -75,6 +75,7 @@
             background: var(--accent-hover);
             transform: translateY(-2px);
         }
+
         hr {
             border: 0;
             height: 1px;
@@ -233,10 +234,10 @@
 
     <script>
         let targetDownloadUrl = "";
+        let apkFileName = "MFlow.apk";
 
         const downloadBtn = document.getElementById('downloadBtn');
 
-        // جلب رابط التنزيل المباشر من GitHub API
         fetch('https://api.github.com/repos/Hance-PDv/Music-Flow/releases/latest')
             .then(response => response.json())
             .then(data => {
@@ -245,6 +246,7 @@
                 
                 if (data.assets && data.assets.length > 0) {
                     targetDownloadUrl = data.assets[0].browser_download_url;
+                    apkFileName = data.assets[0].name || `MFlow_${latestVersion}.apk`;
                 } else {
                     targetDownloadUrl = data.html_url;
                 }
@@ -254,18 +256,40 @@
                 targetDownloadUrl = "https://github.com/Hance-PDv/Music-Flow/releases";
             });
 
-        // تنفيذ عملية التنزيل المباشر عبر iframe مخفي دون إعادة توجيه
         downloadBtn.addEventListener('click', () => {
             if (!targetDownloadUrl) return;
 
-            const hiddenIframe = document.createElement('iframe');
-            hiddenIframe.style.display = 'none';
-            hiddenIframe.src = targetDownloadUrl;
-            document.body.appendChild(hiddenIframe);
+            if (!targetDownloadUrl.endsWith('.apk')) {
+                window.location.href = targetDownloadUrl;
+                return;
+            }
 
-            setTimeout(() => {
-                document.body.removeChild(hiddenIframe);
-            }, 6000);
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', targetDownloadUrl, true);
+            xhr.responseType = 'blob';
+
+            xhr.onload = () => {
+                if (xhr.status === 200) {
+                    const blob = xhr.response;
+                    const blobUrl = window.URL.createObjectURL(blob);
+                    
+                    const a = document.createElement('a');
+                    a.href = blobUrl;
+                    a.download = apkFileName;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    window.URL.revokeObjectURL(blobUrl);
+                } else {
+                    window.location.href = targetDownloadUrl;
+                }
+            };
+
+            xhr.onerror = () => {
+                window.location.href = targetDownloadUrl;
+            };
+
+            xhr.send();
         });
     </script>
 </body>
