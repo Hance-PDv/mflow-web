@@ -11,6 +11,7 @@
             --text-secondary: #94a3b8;
             --accent-color: #38bdf8;
             --accent-hover: #0ea5e9;
+            --card-bg: rgba(255, 255, 255, 0.03);
             --border-color: rgba(255, 255, 255, 0.08);
         }
         body {
@@ -22,60 +23,56 @@
             padding: 40px 16px;
         }
         .container {
-            max-width: 750px;
+            max-width: 800px;
             margin: 0 auto;
         }
         .text-center {
             text-align: center;
         }
+        /* أيقونة حرة بدون خلفية أو مربع */
         .app-icon {
-            width: 120px;
-            height: 120px;
-            border-radius: 28px;
+            width: 110px;
+            height: 110px;
+            border-radius: 26px;
             background: transparent;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            margin-bottom: 10px;
+            box-shadow: none;
+            margin-bottom: 12px;
+            object-fit: contain;
         }
         h1 {
-            font-size: 42px;
+            font-size: 40px;
             font-weight: 800;
-            margin: 10px 0 20px 0;
+            margin: 5px 0 16px 0;
             letter-spacing: -0.5px;
         }
         .description {
             color: var(--text-secondary);
-            font-size: 16px;
-            max-width: 650px;
+            font-size: 15px;
+            max-width: 620px;
             margin: 0 auto 10px auto;
             line-height: 1.7;
         }
         .tagline {
             color: var(--accent-color);
             font-style: italic;
-            font-size: 15px;
-            margin-bottom: 30px;
+            font-size: 14px;
+            margin-bottom: 28px;
         }
         .download-btn {
             display: inline-block;
             background: var(--accent-color);
             color: #080c12;
-            padding: 14px 32px;
+            padding: 15px 36px;
             border-radius: 14px;
             text-decoration: none;
             font-weight: 700;
             font-size: 16px;
-            margin: 20px 0 10px 0;
             transition: background 0.2s, transform 0.2s;
             box-shadow: 0 4px 20px rgba(56, 189, 248, 0.3);
         }
         .download-btn:hover {
             background: var(--accent-hover);
             transform: translateY(-2px);
-        }
-        .version-info {
-            font-size: 13px;
-            color: var(--text-secondary);
-            margin-bottom: 40px;
         }
         hr {
             border: 0;
@@ -84,27 +81,41 @@
             margin: 40px 0;
         }
         h2 {
-            font-size: 26px;
+            font-size: 24px;
             font-weight: 700;
             margin-bottom: 20px;
         }
-        ul {
-            list-style-type: none;
-            padding: 0;
+        /* تنسيق شبكة الميزات في مستطيلات جذابة ومتناسقة */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 16px;
         }
-        li {
-            margin-bottom: 16px;
+        .feature-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+        }
+        .feature-card strong {
+            display: block;
             font-size: 15px;
-            color: var(--text-secondary);
-        }
-        li strong {
+            margin-bottom: 8px;
             color: var(--text-primary);
+        }
+        .feature-card p {
+            color: var(--text-secondary);
+            font-size: 135x;
+            font-size: 13px;
+            margin: 0;
+            line-height: 1.5;
         }
         /* جدول لقطات الشاشة المتناسق */
         .screenshots-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            margin-top: 10px;
         }
         .screenshots-table td {
             padding: 10px;
@@ -125,7 +136,7 @@
         }
         footer {
             text-align: center;
-            margin-top: 60px;
+            margin-top: 50px;
             color: var(--text-secondary);
             font-size: 13px;
         }
@@ -134,9 +145,9 @@
 <body>
 
     <div class="container">
-        <!-- الأيقونة والعنوان -->
+        <!-- الأيقونة الحرة والعنوان -->
         <div class="text-center">
-            <img src="https://raw.githubusercontent.com/Hance-PDv/Music-Flow/refs/heads/main/screenshots/app_icon.png" width="120" alt="MFlow Icon" class="app-icon" />
+            <img src="https://raw.githubusercontent.com/Hance-PDv/Music-Flow/refs/heads/main/screenshots/app_icon.png" width="110" alt="MFlow Icon" class="app-icon" />
             <h1>MFlow</h1>
             <p class="description">
                 <b>MFlow is a refined, full-featured music player designed to give you total control over your audio library. Wrapped in a modern Liquid Glass aesthetic, it delivers uncompromised sound performance through a smooth, ad-free interface tailored completely to your listening preferences.</b>
@@ -145,28 +156,43 @@
                 <i>MFlow: Your music, your way.</i>
             </p>
             
-            <!-- زر التحميل الديناميكي -->
+            <!-- زر التحميل -->
             <div>
                 <a id="downloadBtn" href="https://github.com/Hance-PDv/Music-Flow/releases" class="download-btn" target="_blank">Download MFlow</a>
-            </div>
-            <div class="version-info">
-                Latest Version: <span id="versionText" style="color: var(--accent-color); font-weight: bold;">Loading...</span> &bull; Free &bull; No Ads &bull; Open Source
             </div>
         </div>
 
         <hr />
 
-        <!-- الميزات (Features) -->
+        <!-- الميزات في مستطيلات جذابة ومتناسقة بدون إيموجي -->
         <section>
             <h2>Features</h2>
-            <ul>
-                <li>⚡ <strong>High-Fidelity Audio:</strong> Delivers crisp, rich sound playback with dynamic audio output for an immersive listening experience.</li>
-                <li>⚡ <strong>Real-Time Synced Lyrics:</strong> Displays perfectly synchronized lyrics with smooth line-by-line scrolling that tracks your song precisely.</li>
-                <li>⚡ <strong>Smart Sleep Timer:</strong> Set custom countdowns with quick increment controls (±5 min) to auto-stop playback seamlessly.</li>
-                <li>⚡ <strong>Instant Favorites:</strong> Save and access your most-cherished tracks instantly with a single tap.</li>
-                <li>⚡ <strong>Custom Playlists:</strong> Effortlessly create, edit, and organize personalized song collections tailored to your vibe.</li>
-                <li>⚡ <strong>Listening Insights:</strong> Track your music habits with detailed stats, including total listen time, top-played tracks, and daily trends.</li>
-            </ul>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <strong>High-Fidelity Audio</strong>
+                    <p>Delivers crisp, rich sound playback with dynamic audio output for an immersive listening experience.</p>
+                </div>
+                <div class="feature-card">
+                    <strong>Real-Time Synced Lyrics</strong>
+                    <p>Displays perfectly synchronized lyrics with smooth line-by-line scrolling that tracks your song precisely.</p>
+                </div>
+                <div class="feature-card">
+                    <strong>Smart Sleep Timer</strong>
+                    <p>Set custom countdowns with quick increment controls (±5 min) to auto-stop playback seamlessly.</p>
+                </div>
+                <div class="feature-card">
+                    <strong>Instant Favorites</strong>
+                    <p>Save and access your most-cherished tracks instantly with a single tap.</p>
+                </div>
+                <div class="feature-card">
+                    <strong>Custom Playlists</strong>
+                    <p>Effortlessly create, edit, and organize personalized song collections tailored to your vibe.</p>
+                </div>
+                <div class="feature-card">
+                    <strong>Listening Insights</strong>
+                    <p>Track your music habits with detailed stats, including total listen time, top-played tracks, and daily trends.</p>
+                </div>
+            </div>
         </section>
 
         <hr />
@@ -207,7 +233,7 @@
         </section>
 
         <footer>
-            &copy; 2026 MFlow. All rights reserved. Built with GitHub Pages.
+            &copy; 2026 MFlow. All rights reserved.
         </footer>
     </div>
 
@@ -217,7 +243,6 @@
             .then(response => response.json())
             .then(data => {
                 const latestVersion = data.tag_name;
-                document.getElementById('versionText').innerText = latestVersion;
                 document.getElementById('downloadBtn').innerText = "Download MFlow " + latestVersion;
                 
                 if(data.assets && data.assets.length > 0) {
@@ -228,7 +253,6 @@
                 }
             })
             .catch(err => {
-                document.getElementById('versionText').innerText = "Latest";
                 document.getElementById('downloadBtn').href = "https://github.com/Hance-PDv/Music-Flow/releases";
             });
     </script>
