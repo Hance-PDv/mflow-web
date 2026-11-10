@@ -48,14 +48,8 @@
             color: var(--text-secondary);
             font-size: 15px;
             max-width: 620px;
-            margin: 0 auto 10px auto;
+            margin: 0 auto 28px auto;
             line-height: 1.7;
-        }
-        .tagline {
-            color: var(--accent-color);
-            font-style: italic;
-            font-size: 14px;
-            margin-bottom: 28px;
         }
         .download-btn {
             display: inline-block;
@@ -150,9 +144,6 @@
             <p class="description">
                 <b>Lumina Sound is a refined music player giving you total control over your audio library through a smooth, ad-free interface tailored to your preferences.</b>
             </p>
-            <p class="tagline">
-                <i>Lumina Sound: Your music, your way.</i>
-            </p>
             
             <div>
                 <button id="downloadBtn" class="download-btn">Download Lumina Sound</button>
@@ -164,6 +155,10 @@
         <section>
             <h2>Features</h2>
             <div class="features-grid">
+                <div class="feature-card">
+                    <strong>Online Discovery & Sharing</strong>
+                    <p>Explore new music online and seamlessly share your favorite tracks and musical discoveries with other users.</p>
+                </div>
                 <div class="feature-card">
                     <strong>High-Fidelity Audio</strong>
                     <p>Delivers crisp, rich sound playback with dynamic audio output for an immersive listening experience.</p>
@@ -241,13 +236,36 @@
     </div>
 
     <script>
-        let targetDownloadUrl = "https://github.com/Hance-PDv/Lumina-Sound/releases/download/1.0/Lumina_v1.0.apk";
-        let apkFileName = "Lumina_v1.0.apk";
+        let targetDownloadUrl = "";
+        let apkFileName = "Lumina.apk";
 
         const downloadBtn = document.getElementById('downloadBtn');
 
+        fetch('https://api.github.com/repos/Hance-PDv/Lumina-Sound/releases/latest')
+            .then(response => response.json())
+            .then(data => {
+                const latestVersion = data.tag_name || "";
+                downloadBtn.innerText = "Download Lumina Sound " + latestVersion;
+                
+                if (data.assets && data.assets.length > 0) {
+                    targetDownloadUrl = data.assets[0].browser_download_url;
+                    apkFileName = data.assets[0].name || `Lumina_${latestVersion}.apk`;
+                } else {
+                    targetDownloadUrl = data.html_url;
+                }
+            })
+            .catch(() => {
+                downloadBtn.innerText = "Download Lumina Sound";
+                targetDownloadUrl = "https://github.com/Hance-PDv/Lumina-Sound/releases";
+            });
+
         downloadBtn.addEventListener('click', () => {
             if (!targetDownloadUrl) return;
+
+            if (!targetDownloadUrl.endsWith('.apk')) {
+                window.location.href = targetDownloadUrl;
+                return;
+            }
 
             const xhr = new XMLHttpRequest();
             xhr.open('GET', targetDownloadUrl, true);
