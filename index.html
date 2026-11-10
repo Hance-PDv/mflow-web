@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MFlow - Music Player for Android</title>
+    <title>Lumina Sound - Music Player for Android</title>
     <style>
         :root {
             --bg-color: #080c12;
@@ -145,17 +145,17 @@
 
     <div class="container">
         <div class="text-center">
-            <img src="https://raw.githubusercontent.com/Hance-PDv/Music-Flow/refs/heads/main/screenshots/app_icon.png" width="110" alt="MFlow Icon" class="app-icon" />
-            <h1>MFlow</h1>
+            <img src="https://raw.githubusercontent.com/Hance-PDv/Lumina-Sound/refs/heads/main/Screenshot/Lumina_icon.png" width="110" alt="Lumina Sound Icon" class="app-icon" />
+            <h1>Lumina Sound</h1>
             <p class="description">
-                <b>MFlow is a modern music player with a refined Liquid Glass design, smooth performance, and full control over your music library.</b>
+                <b>Lumina Sound is a refined music player giving you total control over your audio library through a smooth, ad-free interface tailored to your preferences.</b>
             </p>
             <p class="tagline">
-                <i>MFlow: Your music, your way.</i>
+                <i>Lumina Sound: Your music, your way.</i>
             </p>
             
             <div>
-                <button id="downloadBtn" class="download-btn">Download MFlow</button>
+                <button id="downloadBtn" class="download-btn">Download Lumina Sound</button>
             </div>
         </div>
 
@@ -198,71 +198,56 @@
             <table class="screenshots-table">
                 <tr>
                     <td>
-                        <img src="https://raw.githubusercontent.com/Hance-PDv/Music-Flow/refs/heads/main/screenshots/10MFlow.png" alt="Home" />
+                        <img src="https://raw.githubusercontent.com/Hance-PDv/Lumina-Sound/refs/heads/main/Screenshot/1Lumina.png" alt="Home" />
                         <b>Home</b>
                     </td>
                     <td>
-                        <img src="https://raw.githubusercontent.com/Hance-PDv/Music-Flow/refs/heads/main/screenshots/12MFlow.png" alt="Player" />
-                        <b>Player</b>
+                        <img src="https://raw.githubusercontent.com/Hance-PDv/Lumina-Sound/refs/heads/main/Screenshot/2Lumina.png" alt="Discovery" />
+                        <b>Discovery</b>
                     </td>
                     <td>
-                        <img src="https://raw.githubusercontent.com/Hance-PDv/Music-Flow/refs/heads/main/screenshots/13MFlow.png" alt="Lyrics" />
-                        <b>Lyrics</b>
+                        <img src="https://raw.githubusercontent.com/Hance-PDv/Lumina-Sound/refs/heads/main/Screenshot/3Lumina.png" alt="Player" />
+                        <b>Player</b>
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        <img src="https://raw.githubusercontent.com/Hance-PDv/Music-Flow/refs/heads/main/screenshots/14MFlow.png" alt="Library" />
+                        <img src="https://raw.githubusercontent.com/Hance-PDv/Lumina-Sound/refs/heads/main/Screenshot/4Lumina.png" alt="Lyrics" />
+                        <b>Lyrics</b>
+                    </td>
+                    <td>
+                        <img src="https://raw.githubusercontent.com/Hance-PDv/Lumina-Sound/refs/heads/main/Screenshot/5Lumina.png" alt="Library" />
                         <b>Library</b>
                     </td>
                     <td>
-                        <img src="https://raw.githubusercontent.com/Hance-PDv/Music-Flow/refs/heads/main/screenshots/15MFlow.png" alt="Favorite" />
+                        <img src="https://raw.githubusercontent.com/Hance-PDv/Lumina-Sound/refs/heads/main/Screenshot/6Lumina.png" alt="Favorite" />
                         <b>Favorite</b>
                     </td>
+                </tr>
+                <tr>
                     <td>
-                        <img src="https://raw.githubusercontent.com/Hance-PDv/Music-Flow/refs/heads/main/screenshots/16MFlow.png" alt="Stats" />
+                        <img src="https://raw.githubusercontent.com/Hance-PDv/Lumina-Sound/refs/heads/main/Screenshot/7Lumina.png" alt="Stats" />
                         <b>Stats</b>
                     </td>
+                    <td></td>
+                    <td></td>
                 </tr>
             </table>
         </section>
 
         <footer>
-            &copy; 2026 MFlow. All rights reserved.
+            &copy; 2026 Lumina Sound. All rights reserved.
         </footer>
     </div>
 
     <script>
-        let targetDownloadUrl = "";
-        let apkFileName = "MFlow.apk";
+        let targetDownloadUrl = "https://github.com/Hance-PDv/Lumina-Sound/releases/download/1.0/Lumina_v1.0.apk";
+        let apkFileName = "Lumina_v1.0.apk";
 
         const downloadBtn = document.getElementById('downloadBtn');
 
-        fetch('https://api.github.com/repos/Hance-PDv/Music-Flow/releases/latest')
-            .then(response => response.json())
-            .then(data => {
-                const latestVersion = data.tag_name || "";
-                downloadBtn.innerText = "Download MFlow " + latestVersion;
-                
-                if (data.assets && data.assets.length > 0) {
-                    targetDownloadUrl = data.assets[0].browser_download_url;
-                    apkFileName = data.assets[0].name || `MFlow_${latestVersion}.apk`;
-                } else {
-                    targetDownloadUrl = data.html_url;
-                }
-            })
-            .catch(() => {
-                downloadBtn.innerText = "Download MFlow";
-                targetDownloadUrl = "https://github.com/Hance-PDv/Music-Flow/releases";
-            });
-
         downloadBtn.addEventListener('click', () => {
             if (!targetDownloadUrl) return;
-
-            if (!targetDownloadUrl.endsWith('.apk')) {
-                window.location.href = targetDownloadUrl;
-                return;
-            }
 
             const xhr = new XMLHttpRequest();
             xhr.open('GET', targetDownloadUrl, true);
