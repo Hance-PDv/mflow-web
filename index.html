@@ -155,6 +155,60 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
+        .previous-versions-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 8px 18px;
+        }
+        .version-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .version-row:last-child {
+            border-bottom: 0;
+        }
+        .version-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .version-tag {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .version-sub {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        .version-dl-btn {
+            background: rgba(59, 130, 246, 0.14);
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, 0.35);
+            padding: 8px 16px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+            transition: background 0.2s, color 0.2s, transform 0.2s;
+        }
+        .version-dl-btn:hover {
+            background: var(--accent-color);
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+        .empty-versions {
+            padding: 18px 0;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
         footer {
             text-align: center;
             margin-top: 56px;
@@ -168,6 +222,14 @@
             .screenshots-grid {
                 grid-template-columns: repeat(2, 1fr);
                 gap: 14px;
+            }
+            .version-row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .version-dl-btn {
+                width: 100%;
+                text-align: center;
             }
         }
     </style>
@@ -276,6 +338,23 @@
             </div>
         </section>
 
+        <hr />
+
+        <section>
+            <h2>Last Version</h2>
+            <div id="previousVersionsBox" class="previous-versions-box">
+                <div class="version-row">
+                    <div class="version-info">
+                        <span class="version-tag">v1.3</span>
+                        <span class="version-sub">nox_sound_v1.3.apk • Previous Release</span>
+                    </div>
+                    <a href="https://github.com/Hance-PDv/Nox_sound/releases/download/1.3/nox_sound_v1.3.apk" class="version-dl-btn" download="nox_sound_v1.3.apk">
+                        Download APK
+                    </a>
+                </div>
+            </div>
+        </section>
+
         <footer>
             &copy; 2026 Nox Sound by Hance PDv. All rights reserved.
         </footer>
@@ -285,24 +364,86 @@
         const fallbackUrl = "https://github.com/Hance-PDv/Nox_sound/releases/download/1.5/nox_sound_v1.5.apk";
         const downloadBtn = document.getElementById('downloadBtn');
         const versionMeta = document.getElementById('versionMeta');
+        const previousVersionsBox = document.getElementById('previousVersionsBox');
 
-        fetch('https://api.github.com/repos/Hance-PDv/Nox_sound/releases/latest')
+        function formatVersion(tag) {
+            if (!tag) return "v1.5";
+            return `v${String(tag).replace(/^v/i, '')}`;
+        }
+
+        function formatSizeMb(bytes) {
+            if (!bytes || bytes <= 0) return "";
+            return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+        }
+
+        function formatDate(isoStr) {
+            if (!isoStr) return "";
+            const d = new Date(isoStr);
+            if (isNaN(d.getTime())) return "";
+            return d.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+        }
+
+        function renderPreviousReleases(releases, latestTag) {
+            if (!previousVersionsBox) return;
+
+            const filtered = (Array.isArray(releases) ? releases : []).filter(rel => {
+                if (!rel || rel.draft || rel.prerelease) return false;
+                if (latestTag && rel.tag_name === latestTag) return false;
+                return Array.isArray(rel.assets) && rel.assets.some(a => a && a.name && a.name.toLowerCase().endsWith('.apk'));
+            });
+
+            if (filtered.length === 0) {
+                previousVersionsBox.innerHTML = `<div class="empty-versions">No previous APK versions available.</div>`;
+                return;
+            }
+
+            previousVersionsBox.innerHTML = filtered.map(rel => {
+                const apkAsset = rel.assets.find(a => a && a.name && a.name.toLowerCase().endsWith('.apk'));
+                const verLabel = formatVersion(rel.tag_name);
+                const sizeText = formatSizeMb(apkAsset.size);
+                const dateText = formatDate(rel.published_at || rel.created_at);
+                const metaParts = [apkAsset.name];
+                if (sizeText) metaParts.push(sizeText);
+                if (dateText) metaParts.push(dateText);
+
+                return `
+                    <div class="version-row">
+                        <div class="version-info">
+                            <span class="version-tag">${verLabel}</span>
+                            <span class="version-sub">${metaParts.join(" • ")}</span>
+                        </div>
+                        <a href="${apkAsset.browser_download_url}" class="version-dl-btn" download="${apkAsset.name}">
+                            Download APK
+                        </a>
+                    </div>
+                `;
+            }).join("");
+        }
+
+        fetch('https://api.github.com/repos/Hance-PDv/Nox_sound/releases')
             .then(response => {
-                if (!response.ok) throw new Error('Release fetch failed');
+                if (!response.ok) throw new Error('Releases fetch failed');
                 return response.json();
             })
-            .then(data => {
-                const latestVersion = data.tag_name ? `v${data.tag_name.replace(/^v/i, '')}` : "v1.5";
-                downloadBtn.innerText = `Download Nox Sound ${latestVersion}`;
+            .then(releases => {
+                const validReleases = Array.isArray(releases)
+                    ? releases.filter(r => r && !r.draft && !r.prerelease)
+                    : [];
 
-                if (data.assets && data.assets.length > 0) {
-                    const apkAsset = data.assets.find(a => a.name && a.name.endsWith('.apk')) || data.assets[0];
-                    downloadBtn.href = apkAsset.browser_download_url || fallbackUrl;
-                    downloadBtn.setAttribute('download', apkAsset.name || `nox_sound_${latestVersion}.apk`);
-                    if (apkAsset.size) {
-                        const mb = (apkAsset.size / (1024 * 1024)).toFixed(1);
-                        versionMeta.innerText = `Android APK • ${mb} MB`;
+                if (validReleases.length > 0) {
+                    const latest = validReleases[0];
+                    const latestVersion = formatVersion(latest.tag_name);
+                    downloadBtn.innerText = `Download Nox Sound ${latestVersion}`;
+
+                    if (Array.isArray(latest.assets) && latest.assets.length > 0) {
+                        const apkAsset = latest.assets.find(a => a && a.name && a.name.toLowerCase().endsWith('.apk')) || latest.assets[0];
+                        downloadBtn.href = apkAsset.browser_download_url || fallbackUrl;
+                        downloadBtn.setAttribute('download', apkAsset.name || `nox_sound_${latestVersion}.apk`);
+                        const sizeText = formatSizeMb(apkAsset.size);
+                        versionMeta.innerText = sizeText ? `Android APK • ${sizeText}` : "Android APK • Latest Release";
                     }
+
+                    renderPreviousReleases(validReleases, latest.tag_name);
                 }
             })
             .catch(() => {
