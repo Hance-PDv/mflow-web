@@ -3,16 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lumina Sound - Music Player for Android</title>
+    <title>Nox Sound - Music Player for Android</title>
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/Hance-PDv/Nox_sound/refs/heads/main/Screenshot/icon-512.png">
     <style>
         :root {
-            --bg-color: #080c12;
+            --bg-color: #090b10;
             --text-primary: #ffffff;
             --text-secondary: #94a3b8;
-            --accent-color: #38bdf8;
-            --accent-hover: #0ea5e9;
+            --accent-color: #f43f5e;
+            --accent-hover: #e11d48;
             --card-bg: rgba(255, 255, 255, 0.03);
             --border-color: rgba(255, 255, 255, 0.08);
+        }
+        * {
+            box-sizing: border-box;
         }
         body {
             background-color: var(--bg-color);
@@ -20,61 +24,62 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             line-height: 1.6;
             margin: 0;
-            padding: 40px 16px;
+            padding: 48px 16px;
         }
         .container {
-            max-width: 800px;
+            max-width: 840px;
             margin: 0 auto;
         }
         .text-center {
             text-align: center;
         }
         .app-icon {
-            width: 110px;
-            height: 110px;
+            width: 112px;
+            height: 112px;
             border-radius: 26px;
-            background: transparent;
-            box-shadow: none;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
             object-fit: contain;
         }
         h1 {
             font-size: 40px;
             font-weight: 800;
-            margin: 5px 0 16px 0;
+            margin: 4px 0 14px 0;
             letter-spacing: -0.5px;
         }
         .description {
             color: var(--text-secondary);
             font-size: 15px;
-            max-width: 620px;
+            max-width: 560px;
             margin: 0 auto 28px auto;
             line-height: 1.7;
         }
         .download-btn {
             display: inline-block;
             background: var(--accent-color);
-            color: #080c12;
+            color: #ffffff;
             padding: 15px 36px;
             border-radius: 14px;
             text-decoration: none;
             font-weight: 700;
             font-size: 16px;
-            transition: background 0.2s, transform 0.2s;
-            box-shadow: 0 4px 20px rgba(56, 189, 248, 0.3);
-            cursor: pointer;
-            border: none;
+            transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 6px 24px rgba(244, 63, 94, 0.32);
         }
         .download-btn:hover {
             background: var(--accent-hover);
             transform: translateY(-2px);
+            box-shadow: 0 8px 28px rgba(244, 63, 94, 0.42);
         }
-
+        .version-meta {
+            margin-top: 10px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
         hr {
             border: 0;
             height: 1px;
             background: var(--border-color);
-            margin: 40px 0;
+            margin: 44px 0;
         }
         h2 {
             font-size: 24px;
@@ -83,7 +88,7 @@
         }
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             gap: 16px;
         }
         .feature-card {
@@ -103,35 +108,44 @@
             color: var(--text-secondary);
             font-size: 13px;
             margin: 0;
-            line-height: 1.5;
+            line-height: 1.6;
         }
-        .screenshots-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
+        .screenshots-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-top: 12px;
         }
-        .screenshots-table td {
-            padding: 10px;
+        .screenshot-item {
             text-align: center;
-            width: 33.333%;
         }
-        .screenshots-table img {
+        .screenshot-item img {
             width: 100%;
             border-radius: 16px;
             border: 1px solid var(--border-color);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-        }
-        .screenshots-table b {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
             display: block;
-            margin-top: 8px;
+        }
+        .screenshot-item b {
+            display: block;
+            margin-top: 10px;
             font-size: 14px;
             color: var(--text-primary);
         }
         footer {
             text-align: center;
-            margin-top: 50px;
+            margin-top: 56px;
             color: var(--text-secondary);
             font-size: 13px;
+        }
+        @media (max-width: 640px) {
+            h1 {
+                font-size: 32px;
+            }
+            .screenshots-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 14px;
+            }
         }
     </style>
 </head>
@@ -139,14 +153,17 @@
 
     <div class="container">
         <div class="text-center">
-            <img src="https://raw.githubusercontent.com/Hance-PDv/Lumina-Sound/refs/heads/main/Screenshot/Lumina_icon.png" width="110" alt="Lumina Sound Icon" class="app-icon" />
-            <h1>Lumina Sound</h1>
+            <img src="https://raw.githubusercontent.com/Hance-PDv/Nox_sound/refs/heads/main/Screenshot/icon-512.png" width="112" alt="Nox Sound Icon" class="app-icon" />
+            <h1>Nox Sound</h1>
             <p class="description">
-                <b>Lumina Sound is a refined music player giving you total control over your audio library through a smooth, ad-free interface tailored to your preferences.</b>
+                <b>A music player built for a smooth, responsive, and focused listening experience on Android.</b>
             </p>
             
             <div>
-                <button id="downloadBtn" class="download-btn">Download Lumina Sound</button>
+                <a id="downloadBtn" href="https://github.com/Hance-PDv/Nox_sound/releases/download/1.3/nox_sound_v1.3.apk" class="download-btn" download="nox_sound_v1.3.apk">
+                    Download Nox Sound v1.3
+                </a>
+                <div id="versionMeta" class="version-meta">Android APK • Latest Release</div>
             </div>
         </div>
 
@@ -156,32 +173,28 @@
             <h2>Features</h2>
             <div class="features-grid">
                 <div class="feature-card">
-                    <strong>YouTube Music Integration</strong>
-                    <p>Log in directly with your YouTube Music account to stream your music, access your library, and enjoy seamless playback.</p>
+                    <strong>YouTube Music Account & Online Streaming</strong>
+                    <p>Sign in directly with your YouTube Music account to stream your saved and favorite tracks online, access your personal library, and switch smoothly between online playback and local files.</p>
                 </div>
                 <div class="feature-card">
-                    <strong>High-Fidelity Audio</strong>
-                    <p>Delivers crisp, rich sound playback with dynamic audio output for an immersive listening experience.</p>
+                    <strong>Background Playback & Queue Control</strong>
+                    <p>Keep audio running reliably in the background while using other apps, with responsive playback controls, quick track skipping, and flexible queue management.</p>
                 </div>
                 <div class="feature-card">
                     <strong>Real-Time Synced Lyrics</strong>
-                    <p>Displays perfectly synchronized lyrics with smooth line-by-line scrolling that tracks your song precisely.</p>
+                    <p>Follow every song line by line with time-synchronized lyrics that track your playback position automatically and scroll smoothly as the music plays.</p>
                 </div>
                 <div class="feature-card">
                     <strong>Smart Sleep Timer</strong>
-                    <p>Set custom countdowns with quick increment controls (±5 min) to auto-stop playback seamlessly.</p>
+                    <p>Set a custom countdown timer before sleep or focus sessions so playback stops cleanly on schedule without draining battery overnight.</p>
                 </div>
                 <div class="feature-card">
-                    <strong>Instant Favorites</strong>
-                    <p>Save and access your most-cherished tracks instantly with a single tap.</p>
+                    <strong>Favorites & Custom Playlists</strong>
+                    <p>Save tracks you love with a single tap and build custom playlists tailored to different moods, sessions, or artists with easy organization.</p>
                 </div>
                 <div class="feature-card">
-                    <strong>Custom Playlists</strong>
-                    <p>Effortlessly create, edit, and organize personalized song collections tailored to your vibe.</p>
-                </div>
-                <div class="feature-card">
-                    <strong>Listening Insights</strong>
-                    <p>Track your music habits with detailed stats, including total listen time, top-played tracks, and daily trends.</p>
+                    <strong>Clean Dark Interface</strong>
+                    <p>Navigate your home feed, player, lyrics, and library through a dark, low-distraction layout built for clarity and fast everyday use.</p>
                 </div>
             </div>
         </section>
@@ -190,113 +203,66 @@
 
         <section>
             <h2>Screenshots</h2>
-            <table class="screenshots-table">
-                <tr>
-                    <td>
-                        <img src="https://raw.githubusercontent.com/Hance-PDv/Lumina-Sound/refs/heads/main/Screenshot/1Home.png" alt="Home" />
-                        <b>Home</b>
-                    </td>
-                    <td>
-                        <img src="https://raw.githubusercontent.com/Hance-PDv/Lumina-Sound/refs/heads/main/Screenshot/2Lumina.png" alt="Discovery" />
-                        <b>Discovery</b>
-                    </td>
-                    <td>
-                        <img src="https://raw.githubusercontent.com/Hance-PDv/Lumina-Sound/refs/heads/main/Screenshot/3Lumina.png" alt="Player" />
-                        <b>Player</b>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <img src="https://raw.githubusercontent.com/Hance-PDv/Lumina-Sound/refs/heads/main/Screenshot/4Lumina.png" alt="Lyrics" />
-                        <b>Lyrics</b>
-                    </td>
-                    <td>
-                        <img src="https://raw.githubusercontent.com/Hance-PDv/Lumina-Sound/refs/heads/main/Screenshot/5Lumina.png" alt="Library" />
-                        <b>Library</b>
-                    </td>
-                    <td>
-                        <img src="https://raw.githubusercontent.com/Hance-PDv/Lumina-Sound/refs/heads/main/Screenshot/6Lumina.png" alt="Favorite" />
-                        <b>Favorite</b>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <img src="https://raw.githubusercontent.com/Hance-PDv/Lumina-Sound/refs/heads/main/Screenshot/7Lumina.png" alt="Stats" />
-                        <b>Stats</b>
-                    </td>
-                    <td>
-                        <img src="https://raw.githubusercontent.com/Hance-PDv/Lumina-Sound/refs/heads/main/Screenshot/1Setting.png" alt="Setting" />
-                        <b>Setting</b>
-                    </td>
-                    <td></td>
-                </tr>
-            </table>
+            <div class="screenshots-grid">
+                <div class="screenshot-item">
+                    <img src="https://raw.githubusercontent.com/Hance-PDv/Nox_sound/refs/heads/main/Screenshot/1Nox.png" alt="Splash" />
+                    <b>Splash</b>
+                </div>
+                <div class="screenshot-item">
+                    <img src="https://raw.githubusercontent.com/Hance-PDv/Nox_sound/refs/heads/main/Screenshot/2Nox.png" alt="Player" />
+                    <b>Player</b>
+                </div>
+                <div class="screenshot-item">
+                    <img src="https://raw.githubusercontent.com/Hance-PDv/Nox_sound/refs/heads/main/Screenshot/3Nox.png" alt="Home" />
+                    <b>Home</b>
+                </div>
+                <div class="screenshot-item">
+                    <img src="https://raw.githubusercontent.com/Hance-PDv/Nox_sound/refs/heads/main/Screenshot/4Nox.png" alt="Lyrics" />
+                    <b>Lyrics</b>
+                </div>
+                <div class="screenshot-item">
+                    <img src="https://raw.githubusercontent.com/Hance-PDv/Nox_sound/refs/heads/main/Screenshot/5Nox.png" alt="Setting" />
+                    <b>Setting</b>
+                </div>
+                <div class="screenshot-item">
+                    <img src="https://raw.githubusercontent.com/Hance-PDv/Nox_sound/refs/heads/main/Screenshot/6Nox.png" alt="Library" />
+                    <b>Library</b>
+                </div>
+            </div>
         </section>
 
         <footer>
-            &copy; 2026 Lumina Sound. All rights reserved.
+            &copy; 2026 Nox Sound by Hance.Inc. All rights reserved.
         </footer>
     </div>
 
     <script>
-        let targetDownloadUrl = "";
-        let apkFileName = "Lumina.apk";
-
+        const fallbackUrl = "https://github.com/Hance-PDv/Nox_sound/releases/download/1.3/nox_sound_v1.3.apk";
         const downloadBtn = document.getElementById('downloadBtn');
+        const versionMeta = document.getElementById('versionMeta');
 
-        fetch('https://api.github.com/repos/Hance-PDv/Lumina-Sound/releases/latest')
-            .then(response => response.json())
+        fetch('https://api.github.com/repos/Hance-PDv/Nox_sound/releases/latest')
+            .then(response => {
+                if (!response.ok) throw new Error('Release fetch failed');
+                return response.json();
+            })
             .then(data => {
-                const latestVersion = data.tag_name || "";
-                downloadBtn.innerText = "Download Lumina Sound " + latestVersion;
-                
+                const latestVersion = data.tag_name ? `v${data.tag_name.replace(/^v/i, '')}` : "v1.3";
+                downloadBtn.innerText = `Download Nox Sound ${latestVersion}`;
+
                 if (data.assets && data.assets.length > 0) {
-                    targetDownloadUrl = data.assets[0].browser_download_url;
-                    apkFileName = data.assets[0].name || `Lumina_${latestVersion}.apk`;
-                } else {
-                    targetDownloadUrl = data.html_url;
+                    const apkAsset = data.assets.find(a => a.name && a.name.endsWith('.apk')) || data.assets[0];
+                    downloadBtn.href = apkAsset.browser_download_url || fallbackUrl;
+                    downloadBtn.setAttribute('download', apkAsset.name || `nox_sound_${latestVersion}.apk`);
+                    if (apkAsset.size) {
+                        const mb = (apkAsset.size / (1024 * 1024)).toFixed(1);
+                        versionMeta.innerText = `Android APK • ${mb} MB`;
+                    }
                 }
             })
             .catch(() => {
-                downloadBtn.innerText = "Download Lumina Sound";
-                targetDownloadUrl = "https://github.com/Hance-PDv/Lumina-Sound/releases";
+                downloadBtn.href = fallbackUrl;
             });
-
-        downloadBtn.addEventListener('click', () => {
-            if (!targetDownloadUrl) return;
-
-            if (!targetDownloadUrl.endsWith('.apk')) {
-                window.location.href = targetDownloadUrl;
-                return;
-            }
-
-            const xhr = new XMLHttpRequest();
-            xhr.open('GET', targetDownloadUrl, true);
-            xhr.responseType = 'blob';
-
-            xhr.onload = () => {
-                if (xhr.status === 200) {
-                    const blob = xhr.response;
-                    const blobUrl = window.URL.createObjectURL(blob);
-                    
-                    const a = document.createElement('a');
-                    a.href = blobUrl;
-                    a.download = apkFileName;
-                    document.body.appendChild(a);
-                    a.click();
-                    a.remove();
-                    window.URL.revokeObjectURL(blobUrl);
-                } else {
-                    window.location.href = targetDownloadUrl;
-                }
-            };
-
-            xhr.onerror = () => {
-                window.location.href = targetDownloadUrl;
-            };
-
-            xhr.send();
-        });
     </script>
 </body>
 </html>
