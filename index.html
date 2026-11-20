@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nox Sound - Music Player for Android</title>
-    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/Hance-PDv/Nox_sound/refs/heads/main/Screenshot/icon-512.png">
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/Hance-PDv/Nox_sound/refs/heads/main/Screenshot/app_icon.png">
     <style>
         :root {
             --bg-color: #090b10;
@@ -121,6 +121,8 @@
         }
         .screenshot-item img {
             width: 100%;
+            height: 360px;
+            object-fit: cover;
             border-radius: 16px;
             border: 1px solid var(--border-color);
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
@@ -131,6 +133,9 @@
             margin-top: 10px;
             font-size: 14px;
             color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         footer {
             text-align: center;
@@ -146,6 +151,9 @@
                 grid-template-columns: repeat(2, 1fr);
                 gap: 14px;
             }
+            .screenshot-item img {
+                height: 260px;
+            }
         }
     </style>
 </head>
@@ -153,15 +161,15 @@
 
     <div class="container">
         <div class="text-center">
-            <img src="https://raw.githubusercontent.com/Hance-PDv/Nox_sound/refs/heads/main/Screenshot/icon-512.png" width="112" alt="Nox Sound Icon" class="app-icon" />
+            <img src="https://raw.githubusercontent.com/Hance-PDv/Nox_sound/refs/heads/main/Screenshot/app_icon.png" width="112" alt="Nox Sound Icon" class="app-icon" />
             <h1>Nox Sound</h1>
             <p class="description">
                 <b>A music player built for a smooth, responsive, and focused listening experience on Android.</b>
             </p>
             
             <div>
-                <a id="downloadBtn" href="https://github.com/Hance-PDv/Nox_sound/releases/download/1.3/nox_sound_v1.3.apk" class="download-btn" download="nox_sound_v1.3.apk">
-                    Download Nox Sound v1.3
+                <a id="downloadBtn" href="https://github.com/Hance-PDv/Nox_sound/releases/download/1.5/nox_sound_v1.5.apk" class="download-btn" download="nox_sound_v1.5.apk">
+                    Download Nox Sound v1.5
                 </a>
                 <div id="versionMeta" class="version-meta">Android APK • Latest Release</div>
             </div>
@@ -173,12 +181,20 @@
             <h2>Features</h2>
             <div class="features-grid">
                 <div class="feature-card">
-                    <strong>YouTube Music Account & Online Streaming</strong>
-                    <p>Sign in directly with your YouTube Music account to stream your saved and favorite tracks online, access your personal library, and switch smoothly between online playback and local files.</p>
+                    <strong>Online Streaming & Discovery</strong>
+                    <p>Explore trending tracks and stream music smoothly online with smart search, live suggestions, and quick switching between streamed audio and offline files.</p>
+                </div>
+                <div class="feature-card">
+                    <strong>Data-Smart Offline Downloads & Cache Reuse</strong>
+                    <p>Save tracks for offline listening while reusing already-streamed audio and cached artwork to avoid duplicate downloads, paired with a dedicated Download Manager and stream cache controls.</p>
+                </div>
+                <div class="feature-card">
+                    <strong>Instant Offline Playback</strong>
+                    <p>Play saved offline tracks immediately with zero extra data usage, even after clearing streaming cache, with multi-select batch deletion and safe back-button handling.</p>
                 </div>
                 <div class="feature-card">
                     <strong>Background Playback & Queue Control</strong>
-                    <p>Keep audio running reliably in the background while using other apps, with responsive playback controls, quick track skipping, and flexible queue management.</p>
+                    <p>Keep audio running reliably in the background while using other apps, with responsive playback controls, quick track skipping, and flexible queue management for uninterrupted listening.</p>
                 </div>
                 <div class="feature-card">
                     <strong>Real-Time Synced Lyrics</strong>
@@ -193,8 +209,8 @@
                     <p>Save tracks you love with a single tap and build custom playlists tailored to different moods, sessions, or artists with easy organization.</p>
                 </div>
                 <div class="feature-card">
-                    <strong>Clean Dark Interface</strong>
-                    <p>Navigate your home feed, player, lyrics, and library through a dark, low-distraction layout built for clarity and fast everyday use.</p>
+                    <strong>Redesigned Dark Interface</strong>
+                    <p>Experience a refreshed color palette and updated layouts across Home, Discovery, Search, and Settings for clearer hierarchy, frosted glass accents, and smoother everyday navigation.</p>
                 </div>
             </div>
         </section>
@@ -205,28 +221,36 @@
             <h2>Screenshots</h2>
             <div class="screenshots-grid">
                 <div class="screenshot-item">
-                    <img src="https://raw.githubusercontent.com/Hance-PDv/Nox_sound/refs/heads/main/Screenshot/1Nox.png" alt="Splash" />
-                    <b>Splash</b>
-                </div>
-                <div class="screenshot-item">
-                    <img src="https://raw.githubusercontent.com/Hance-PDv/Nox_sound/refs/heads/main/Screenshot/2Nox.png" alt="Player" />
-                    <b>Player</b>
-                </div>
-                <div class="screenshot-item">
-                    <img src="https://raw.githubusercontent.com/Hance-PDv/Nox_sound/refs/heads/main/Screenshot/3Nox.png" alt="Home" />
+                    <img src="https://raw.githubusercontent.com/Hance-PDv/Nox_sound/refs/heads/main/Screenshot/1NoxSound.png" alt="Home" />
                     <b>Home</b>
                 </div>
                 <div class="screenshot-item">
-                    <img src="https://raw.githubusercontent.com/Hance-PDv/Nox_sound/refs/heads/main/Screenshot/4Nox.png" alt="Lyrics" />
+                    <img src="https://raw.githubusercontent.com/Hance-PDv/Nox_sound/refs/heads/main/Screenshot/2NoxSound.png" alt="Discovery" />
+                    <b>Discovery</b>
+                </div>
+                <div class="screenshot-item">
+                    <img src="https://raw.githubusercontent.com/Hance-PDv/Nox_sound/refs/heads/main/Screenshot/3NoxSound.png" alt="Search" />
+                    <b>Search</b>
+                </div>
+                <div class="screenshot-item">
+                    <img src="https://raw.githubusercontent.com/Hance-PDv/Nox_sound/refs/heads/main/Screenshot/4NoxSound.png" alt="Player" />
+                    <b>Player</b>
+                </div>
+                <div class="screenshot-item">
+                    <img src="https://raw.githubusercontent.com/Hance-PDv/Nox_sound/refs/heads/main/Screenshot/5NoxSound.png" alt="Lyrics" />
                     <b>Lyrics</b>
                 </div>
                 <div class="screenshot-item">
-                    <img src="https://raw.githubusercontent.com/Hance-PDv/Nox_sound/refs/heads/main/Screenshot/5Nox.png" alt="Setting" />
-                    <b>Setting</b>
+                    <img src="https://raw.githubusercontent.com/Hance-PDv/Nox_sound/refs/heads/main/Screenshot/6NoxSound.png" alt="Library" />
+                    <b>Library</b>
                 </div>
                 <div class="screenshot-item">
-                    <img src="https://raw.githubusercontent.com/Hance-PDv/Nox_sound/refs/heads/main/Screenshot/6Nox.png" alt="Library" />
-                    <b>Library</b>
+                    <img src="https://raw.githubusercontent.com/Hance-PDv/Nox_sound/refs/heads/main/Screenshot/7NoxSound.png" alt="Download Manager" />
+                    <b>Download Manager</b>
+                </div>
+                <div class="screenshot-item">
+                    <img src="https://raw.githubusercontent.com/Hance-PDv/Nox_sound/refs/heads/main/Screenshot/8NoxSound.png" alt="Setting" />
+                    <b>Setting</b>
                 </div>
             </div>
         </section>
@@ -237,7 +261,7 @@
     </div>
 
     <script>
-        const fallbackUrl = "https://github.com/Hance-PDv/Nox_sound/releases/download/1.3/nox_sound_v1.3.apk";
+        const fallbackUrl = "https://github.com/Hance-PDv/Nox_sound/releases/download/1.5/nox_sound_v1.5.apk";
         const downloadBtn = document.getElementById('downloadBtn');
         const versionMeta = document.getElementById('versionMeta');
 
@@ -247,7 +271,7 @@
                 return response.json();
             })
             .then(data => {
-                const latestVersion = data.tag_name ? `v${data.tag_name.replace(/^v/i, '')}` : "v1.3";
+                const latestVersion = data.tag_name ? `v${data.tag_name.replace(/^v/i, '')}` : "v1.5";
                 downloadBtn.innerText = `Download Nox Sound ${latestVersion}`;
 
                 if (data.assets && data.assets.length > 0) {
