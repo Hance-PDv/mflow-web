@@ -75,8 +75,81 @@
             font-size: 12px;
             color: var(--text-secondary);
         }
+        .stats-pill-wrap {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .stats-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 10px 18px;
+            border-radius: 14px;
+            opacity: 0;
+            transform: translateY(10px) scale(0.98);
+            transition: opacity 0.55s ease, transform 0.55s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.25s ease, background 0.25s ease;
+        }
+        .stats-pill.visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+        .stats-pill:hover {
+            border-color: rgba(59, 130, 246, 0.35);
+            background: rgba(255, 255, 255, 0.045);
+        }
+        .stats-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            background: rgba(59, 130, 246, 0.14);
+            border: 1px solid rgba(59, 130, 246, 0.28);
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .stats-text {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            text-align: left;
+            gap: 2px;
+        }
+        .stats-value-row {
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+        }
+        .stats-value {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--text-primary);
+            font-variant-numeric: tabular-nums;
+            letter-spacing: -0.3px;
+            line-height: 1.15;
+        }
+        .stats-badge-tag {
+            font-size: 11px;
+            font-weight: 600;
+            color: #60a5fa;
+            background: rgba(59, 130, 246, 0.12);
+            padding: 1px 7px;
+            border-radius: 999px;
+            line-height: 1.4;
+        }
+        .stats-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.2;
+        }
         .store-badge-wrap {
-            margin-top: 22px;
+            margin-top: 20px;
         }
         .store-badge-wrap a {
             display: inline-block;
@@ -251,6 +324,25 @@
                 <div id="versionMeta" class="version-meta">Android APK • Latest Release</div>
             </div>
 
+            <div class="stats-pill-wrap">
+                <div id="downloadsStatsPill" class="stats-pill" aria-live="polite">
+                    <div class="stats-icon" aria-hidden="true">
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                    </div>
+                    <div class="stats-text">
+                        <div class="stats-value-row">
+                            <span id="totalDownloadsCount" class="stats-value">0</span>
+                            <span id="releasesCountTag" class="stats-badge-tag">GitHub Releases</span>
+                        </div>
+                        <span class="stats-label">Total App Downloads</span>
+                    </div>
+                </div>
+            </div>
+
             <div class="store-badge-wrap">
                 <a href="https://rookieenough.github.io/Orion-Data/app/?id=nox-sound">
                     <img src="https://raw.githubusercontent.com/RookieEnough/Orion-Store/refs/heads/main/assets/orion-badge.png" alt="Get it on Orion Store" height="52" />
@@ -365,6 +457,10 @@
         const downloadBtn = document.getElementById('downloadBtn');
         const versionMeta = document.getElementById('versionMeta');
         const previousVersionsBox = document.getElementById('previousVersionsBox');
+        const downloadsStatsPill = document.getElementById('downloadsStatsPill');
+        const totalDownloadsCountEl = document.getElementById('totalDownloadsCount');
+        const releasesCountTagEl = document.getElementById('releasesCountTag');
+        const CACHE_KEY_DOWNLOADS = 'nox_sound_total_downloads_v1';
 
         function formatVersion(tag) {
             if (!tag) return "v1.5";
@@ -381,6 +477,49 @@
             const d = new Date(isoStr);
             if (isNaN(d.getTime())) return "";
             return d.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+        }
+
+        function animateDownloadCounter(targetTotal, releaseCount) {
+            if (!downloadsStatsPill || !totalDownloadsCountEl) return;
+            const finalValue = Math.max(0, Math.floor(Number(targetTotal) || 0));
+
+            if (releasesCountTagEl && releaseCount > 0) {
+                releasesCountTagEl.textContent = `${releaseCount} ${releaseCount === 1 ? 'Release' : 'Releases'}`;
+            }
+
+            requestAnimationFrame(() => {
+                downloadsStatsPill.classList.add('visible');
+            });
+
+            const duration = 1400;
+            const startTime = performance.now();
+
+            function step(now) {
+                const elapsed = now - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 4);
+                const current = Math.round(eased * finalValue);
+                totalDownloadsCountEl.textContent = current.toLocaleString('en-US');
+
+                if (progress < 1) {
+                    requestAnimationFrame(step);
+                } else {
+                    totalDownloadsCountEl.textContent = finalValue.toLocaleString('en-US');
+                }
+            }
+
+            requestAnimationFrame(step);
+        }
+
+        function calculateTotalDownloads(releases) {
+            if (!Array.isArray(releases)) return 0;
+            return releases.reduce((total, rel) => {
+                if (!rel || !Array.isArray(rel.assets)) return total;
+                const relSum = rel.assets.reduce((sum, asset) => {
+                    return sum + (asset && typeof asset.download_count === 'number' ? asset.download_count : 0);
+                }, 0);
+                return total + relSum;
+            }, 0);
         }
 
         function renderPreviousReleases(releases, latestTag) {
@@ -402,9 +541,11 @@
                 const verLabel = formatVersion(rel.tag_name);
                 const sizeText = formatSizeMb(apkAsset.size);
                 const dateText = formatDate(rel.published_at || rel.created_at);
+                const dlCount = typeof apkAsset.download_count === 'number' ? apkAsset.download_count : 0;
                 const metaParts = [apkAsset.name];
                 if (sizeText) metaParts.push(sizeText);
                 if (dateText) metaParts.push(dateText);
+                if (dlCount > 0) metaParts.push(`${dlCount.toLocaleString('en-US')} downloads`);
 
                 return `
                     <div class="version-row">
@@ -420,7 +561,7 @@
             }).join("");
         }
 
-        fetch('https://api.github.com/repos/Hance-PDv/Nox_sound/releases')
+        fetch('https://api.github.com/repos/Hance-PDv/Nox_sound/releases?per_page=100')
             .then(response => {
                 if (!response.ok) throw new Error('Releases fetch failed');
                 return response.json();
@@ -429,6 +570,16 @@
                 const validReleases = Array.isArray(releases)
                     ? releases.filter(r => r && !r.draft && !r.prerelease)
                     : [];
+
+                const totalDownloads = calculateTotalDownloads(validReleases);
+                try {
+                    localStorage.setItem(CACHE_KEY_DOWNLOADS, JSON.stringify({
+                        total: totalDownloads,
+                        releases: validReleases.length
+                    }));
+                } catch (e) {}
+
+                animateDownloadCounter(totalDownloads, validReleases.length);
 
                 if (validReleases.length > 0) {
                     const latest = validReleases[0];
@@ -448,6 +599,16 @@
             })
             .catch(() => {
                 downloadBtn.href = fallbackUrl;
+                try {
+                    const cached = JSON.parse(localStorage.getItem(CACHE_KEY_DOWNLOADS) || 'null');
+                    if (cached && typeof cached.total === 'number') {
+                        animateDownloadCounter(cached.total, cached.releases || 0);
+                        return;
+                    }
+                } catch (e) {}
+                if (downloadsStatsPill) {
+                    downloadsStatsPill.style.display = 'none';
+                }
             });
     </script>
 </body>
