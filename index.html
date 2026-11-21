@@ -88,7 +88,7 @@
             border: 1px solid var(--border-color);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            padding: 10px 18px;
+            padding: 10px 20px;
             border-radius: 14px;
             opacity: 0;
             transform: translateY(10px) scale(0.98);
@@ -121,11 +121,6 @@
             text-align: left;
             gap: 2px;
         }
-        .stats-value-row {
-            display: flex;
-            align-items: baseline;
-            gap: 6px;
-        }
         .stats-value {
             font-size: 18px;
             font-weight: 800;
@@ -133,15 +128,6 @@
             font-variant-numeric: tabular-nums;
             letter-spacing: -0.3px;
             line-height: 1.15;
-        }
-        .stats-badge-tag {
-            font-size: 11px;
-            font-weight: 600;
-            color: #60a5fa;
-            background: rgba(59, 130, 246, 0.12);
-            padding: 1px 7px;
-            border-radius: 999px;
-            line-height: 1.4;
         }
         .stats-label {
             font-size: 12px;
@@ -334,11 +320,8 @@
                         </svg>
                     </div>
                     <div class="stats-text">
-                        <div class="stats-value-row">
-                            <span id="totalDownloadsCount" class="stats-value">0</span>
-                            <span id="releasesCountTag" class="stats-badge-tag">GitHub Releases</span>
-                        </div>
-                        <span class="stats-label">Total App Downloads</span>
+                        <span id="totalDownloadsCount" class="stats-value">0</span>
+                        <span class="stats-label">Downloads</span>
                     </div>
                 </div>
             </div>
@@ -459,7 +442,6 @@
         const previousVersionsBox = document.getElementById('previousVersionsBox');
         const downloadsStatsPill = document.getElementById('downloadsStatsPill');
         const totalDownloadsCountEl = document.getElementById('totalDownloadsCount');
-        const releasesCountTagEl = document.getElementById('releasesCountTag');
         const CACHE_KEY_DOWNLOADS = 'nox_sound_total_downloads_v1';
 
         function formatVersion(tag) {
@@ -479,13 +461,9 @@
             return d.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
         }
 
-        function animateDownloadCounter(targetTotal, releaseCount) {
+        function animateDownloadCounter(targetTotal) {
             if (!downloadsStatsPill || !totalDownloadsCountEl) return;
             const finalValue = Math.max(0, Math.floor(Number(targetTotal) || 0));
-
-            if (releasesCountTagEl && releaseCount > 0) {
-                releasesCountTagEl.textContent = `${releaseCount} ${releaseCount === 1 ? 'Release' : 'Releases'}`;
-            }
 
             requestAnimationFrame(() => {
                 downloadsStatsPill.classList.add('visible');
@@ -541,11 +519,9 @@
                 const verLabel = formatVersion(rel.tag_name);
                 const sizeText = formatSizeMb(apkAsset.size);
                 const dateText = formatDate(rel.published_at || rel.created_at);
-                const dlCount = typeof apkAsset.download_count === 'number' ? apkAsset.download_count : 0;
                 const metaParts = [apkAsset.name];
                 if (sizeText) metaParts.push(sizeText);
                 if (dateText) metaParts.push(dateText);
-                if (dlCount > 0) metaParts.push(`${dlCount.toLocaleString('en-US')} downloads`);
 
                 return `
                     <div class="version-row">
@@ -574,12 +550,11 @@
                 const totalDownloads = calculateTotalDownloads(validReleases);
                 try {
                     localStorage.setItem(CACHE_KEY_DOWNLOADS, JSON.stringify({
-                        total: totalDownloads,
-                        releases: validReleases.length
+                        total: totalDownloads
                     }));
                 } catch (e) {}
 
-                animateDownloadCounter(totalDownloads, validReleases.length);
+                animateDownloadCounter(totalDownloads);
 
                 if (validReleases.length > 0) {
                     const latest = validReleases[0];
@@ -602,7 +577,7 @@
                 try {
                     const cached = JSON.parse(localStorage.getItem(CACHE_KEY_DOWNLOADS) || 'null');
                     if (cached && typeof cached.total === 'number') {
-                        animateDownloadCounter(cached.total, cached.releases || 0);
+                        animateDownloadCounter(cached.total);
                         return;
                     }
                 } catch (e) {}
