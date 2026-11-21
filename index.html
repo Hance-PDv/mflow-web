@@ -43,7 +43,7 @@
         h1 {
             font-size: 40px;
             font-weight: 800;
-            margin: 4px 0 14px 0;
+            margin: 4px 0 12px 0;
             letter-spacing: -0.5px;
         }
         .description {
@@ -53,11 +53,21 @@
             margin: 0 auto 28px auto;
             line-height: 1.7;
         }
-        .download-btn {
+        .description-tagline {
             display: inline-block;
+            margin-top: 2px;
+            color: var(--text-primary);
+            font-weight: 600;
+            letter-spacing: 0.2px;
+        }
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
             background: var(--accent-color);
             color: #ffffff;
-            padding: 15px 36px;
+            padding: 14px 28px;
             border-radius: 14px;
             text-decoration: none;
             font-weight: 700;
@@ -69,6 +79,18 @@
             background: var(--accent-hover);
             transform: translateY(-2px);
             box-shadow: 0 8px 28px rgba(59, 130, 246, 0.46);
+        }
+        .dl-version-pill {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 999px;
+            line-height: 1.3;
+            letter-spacing: 0.2px;
         }
         .version-meta {
             margin-top: 10px;
@@ -218,7 +240,7 @@
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 16px;
-            padding: 8px 18px;
+            padding: 4px 18px;
         }
         .version-row {
             display: flex;
@@ -233,23 +255,28 @@
         }
         .version-info {
             display: flex;
-            flex-direction: column;
-            gap: 2px;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
         }
         .version-tag {
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 700;
             color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border-color);
+            padding: 3px 10px;
+            border-radius: 999px;
         }
         .version-sub {
-            font-size: 12px;
+            font-size: 13px;
             color: var(--text-secondary);
         }
         .version-dl-btn {
             background: rgba(59, 130, 246, 0.14);
             color: #60a5fa;
             border: 1px solid rgba(59, 130, 246, 0.35);
-            padding: 8px 16px;
+            padding: 8px 18px;
             border-radius: 10px;
             text-decoration: none;
             font-size: 13px;
@@ -300,12 +327,14 @@
             <img src="https://raw.githubusercontent.com/Hance-PDv/Nox_sound/refs/heads/main/Screenshot/app_icon.png" width="112" alt="Nox Sound Icon" class="app-icon" />
             <h1>Nox Sound</h1>
             <p class="description">
-                <b>A music player built for a smooth, responsive, and focused listening experience on Android.</b>
+                Music, crafted for a better listening experience.<br>
+                <span class="description-tagline">Listen. Discover. Enjoy.</span>
             </p>
             
             <div>
                 <a id="downloadBtn" href="https://github.com/Hance-PDv/Nox_sound/releases/download/1.5/nox_sound_v1.5.apk" class="download-btn" download="nox_sound_v1.5.apk">
-                    Download Nox Sound v1.5
+                    <span>Download</span>
+                    <span id="downloadBtnVersion" class="dl-version-pill">v1.5</span>
                 </a>
                 <div id="versionMeta" class="version-meta">Android APK • Latest Release</div>
             </div>
@@ -421,10 +450,10 @@
                 <div class="version-row">
                     <div class="version-info">
                         <span class="version-tag">v1.3</span>
-                        <span class="version-sub">nox_sound_v1.3.apk • Previous Release</span>
+                        <span class="version-sub">Previous Release</span>
                     </div>
                     <a href="https://github.com/Hance-PDv/Nox_sound/releases/download/1.3/nox_sound_v1.3.apk" class="version-dl-btn" download="nox_sound_v1.3.apk">
-                        Download APK
+                        Download
                     </a>
                 </div>
             </div>
@@ -438,6 +467,7 @@
     <script>
         const fallbackUrl = "https://github.com/Hance-PDv/Nox_sound/releases/download/1.5/nox_sound_v1.5.apk";
         const downloadBtn = document.getElementById('downloadBtn');
+        const downloadBtnVersion = document.getElementById('downloadBtnVersion');
         const versionMeta = document.getElementById('versionMeta');
         const previousVersionsBox = document.getElementById('previousVersionsBox');
         const downloadsStatsPill = document.getElementById('downloadsStatsPill');
@@ -510,7 +540,7 @@
             });
 
             if (filtered.length === 0) {
-                previousVersionsBox.innerHTML = `<div class="empty-versions">No previous APK versions available.</div>`;
+                previousVersionsBox.innerHTML = `<div class="empty-versions">No previous versions available.</div>`;
                 return;
             }
 
@@ -519,18 +549,19 @@
                 const verLabel = formatVersion(rel.tag_name);
                 const sizeText = formatSizeMb(apkAsset.size);
                 const dateText = formatDate(rel.published_at || rel.created_at);
-                const metaParts = [apkAsset.name];
+                const metaParts = [];
                 if (sizeText) metaParts.push(sizeText);
                 if (dateText) metaParts.push(dateText);
+                const subText = metaParts.length > 0 ? metaParts.join(" • ") : "Previous Release";
 
                 return `
                     <div class="version-row">
                         <div class="version-info">
                             <span class="version-tag">${verLabel}</span>
-                            <span class="version-sub">${metaParts.join(" • ")}</span>
+                            <span class="version-sub">${subText}</span>
                         </div>
                         <a href="${apkAsset.browser_download_url}" class="version-dl-btn" download="${apkAsset.name}">
-                            Download APK
+                            Download
                         </a>
                     </div>
                 `;
@@ -559,7 +590,9 @@
                 if (validReleases.length > 0) {
                     const latest = validReleases[0];
                     const latestVersion = formatVersion(latest.tag_name);
-                    downloadBtn.innerText = `Download Nox Sound ${latestVersion}`;
+                    if (downloadBtnVersion) {
+                        downloadBtnVersion.textContent = latestVersion;
+                    }
 
                     if (Array.isArray(latest.assets) && latest.assets.length > 0) {
                         const apkAsset = latest.assets.find(a => a && a.name && a.name.toLowerCase().endsWith('.apk')) || latest.assets[0];
