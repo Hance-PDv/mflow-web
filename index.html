@@ -220,13 +220,18 @@
             display: flex;
             gap: 16px;
             overflow-x: auto;
+            overflow-y: hidden;
             padding: 4px 2px 14px 2px;
             margin-top: 12px;
-            scroll-snap-type: x mandatory;
-            scroll-behavior: smooth;
             -webkit-overflow-scrolling: touch;
+            overscroll-behavior-x: contain;
+            cursor: grab;
+            user-select: none;
             scrollbar-width: thin;
             scrollbar-color: rgba(255, 255, 255, 0.16) rgba(255, 255, 255, 0.03);
+        }
+        .screenshots-scroll.is-dragging {
+            cursor: grabbing;
         }
         .screenshots-scroll::-webkit-scrollbar {
             height: 6px;
@@ -244,7 +249,6 @@
         }
         .screenshot-item {
             flex: 0 0 210px;
-            scroll-snap-align: start;
             text-align: center;
         }
         .screenshot-item img {
@@ -255,6 +259,8 @@
             border: 1px solid var(--border-color);
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
             display: block;
+            -webkit-user-drag: none;
+            pointer-events: none;
             transition: transform 0.25s ease, border-color 0.25s ease;
         }
         .screenshot-item:hover img {
@@ -438,37 +444,37 @@
 
         <section>
             <h2>Screenshots</h2>
-            <div class="screenshots-scroll">
+            <div id="screenshotsScroll" class="screenshots-scroll">
                 <div class="screenshot-item">
-                    <img src="https://raw.githubusercontent.com/Hance-PDv/Nox_sound/refs/heads/main/Screenshot/1NoxSound.png" alt="Home" />
+                    <img src="https://raw.githubusercontent.com/Hance-PDv/Nox_sound/refs/heads/main/Screenshot/1NoxSound.png" alt="Home" draggable="false" />
                     <b>Home</b>
                 </div>
                 <div class="screenshot-item">
-                    <img src="https://raw.githubusercontent.com/Hance-PDv/Nox_sound/refs/heads/main/Screenshot/2NoxSound.png" alt="Discovery" />
+                    <img src="https://raw.githubusercontent.com/Hance-PDv/Nox_sound/refs/heads/main/Screenshot/2NoxSound.png" alt="Discovery" draggable="false" />
                     <b>Discovery</b>
                 </div>
                 <div class="screenshot-item">
-                    <img src="https://raw.githubusercontent.com/Hance-PDv/Nox_sound/refs/heads/main/Screenshot/3NoxSound.png" alt="Search" />
+                    <img src="https://raw.githubusercontent.com/Hance-PDv/Nox_sound/refs/heads/main/Screenshot/3NoxSound.png" alt="Search" draggable="false" />
                     <b>Search</b>
                 </div>
                 <div class="screenshot-item">
-                    <img src="https://raw.githubusercontent.com/Hance-PDv/Nox_sound/refs/heads/main/Screenshot/4NoxSound.png" alt="Player" />
+                    <img src="https://raw.githubusercontent.com/Hance-PDv/Nox_sound/refs/heads/main/Screenshot/4NoxSound.png" alt="Player" draggable="false" />
                     <b>Player</b>
                 </div>
                 <div class="screenshot-item">
-                    <img src="https://raw.githubusercontent.com/Hance-PDv/Nox_sound/refs/heads/main/Screenshot/5NoxSound.png" alt="Lyrics" />
+                    <img src="https://raw.githubusercontent.com/Hance-PDv/Nox_sound/refs/heads/main/Screenshot/5NoxSound.png" alt="Lyrics" draggable="false" />
                     <b>Lyrics</b>
                 </div>
                 <div class="screenshot-item">
-                    <img src="https://raw.githubusercontent.com/Hance-PDv/Nox_sound/refs/heads/main/Screenshot/6NoxSound.png" alt="Library" />
+                    <img src="https://raw.githubusercontent.com/Hance-PDv/Nox_sound/refs/heads/main/Screenshot/6NoxSound.png" alt="Library" draggable="false" />
                     <b>Library</b>
                 </div>
                 <div class="screenshot-item">
-                    <img src="https://raw.githubusercontent.com/Hance-PDv/Nox_sound/refs/heads/main/Screenshot/7NoxSound.png" alt="Download Manager" />
+                    <img src="https://raw.githubusercontent.com/Hance-PDv/Nox_sound/refs/heads/main/Screenshot/7NoxSound.png" alt="Download Manager" draggable="false" />
                     <b>Download Manager</b>
                 </div>
                 <div class="screenshot-item">
-                    <img src="https://raw.githubusercontent.com/Hance-PDv/Nox_sound/refs/heads/main/Screenshot/8NoxSound.png" alt="Setting" />
+                    <img src="https://raw.githubusercontent.com/Hance-PDv/Nox_sound/refs/heads/main/Screenshot/8NoxSound.png" alt="Setting" draggable="false" />
                     <b>Setting</b>
                 </div>
             </div>
@@ -504,7 +510,75 @@
         const previousVersionsBox = document.getElementById('previousVersionsBox');
         const downloadsStatsPill = document.getElementById('downloadsStatsPill');
         const totalDownloadsCountEl = document.getElementById('totalDownloadsCount');
+        const screenshotsScroll = document.getElementById('screenshotsScroll');
         const CACHE_KEY_DOWNLOADS = 'nox_sound_total_downloads_v1';
+
+        if (screenshotsScroll) {
+            let isDown = false;
+            let startX = 0;
+            let scrollStart = 0;
+            let velocity = 0;
+            let lastX = 0;
+            let lastTime = 0;
+            let momentumId = null;
+
+            function stopMomentum() {
+                if (momentumId) {
+                    cancelAnimationFrame(momentumId);
+                    momentumId = null;
+                }
+            }
+
+            function startMomentum() {
+                stopMomentum();
+                function step() {
+                    if (Math.abs(velocity) < 0.3) return;
+                    screenshotsScroll.scrollLeft -= velocity;
+                    velocity *= 0.94;
+                    momentumId = requestAnimationFrame(step);
+                }
+                momentumId = requestAnimationFrame(step);
+            }
+
+            screenshotsScroll.addEventListener('mousedown', (e) => {
+                if (e.button !== 0) return;
+                stopMomentum();
+                isDown = true;
+                screenshotsScroll.classList.add('is-dragging');
+                startX = e.pageX;
+                lastX = e.pageX;
+                lastTime = performance.now();
+                scrollStart = screenshotsScroll.scrollLeft;
+                velocity = 0;
+            });
+
+            window.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                const now = performance.now();
+                const dt = Math.max(now - lastTime, 1);
+                const dx = e.pageX - lastX;
+                velocity = (dx / dt) * 16;
+                lastX = e.pageX;
+                lastTime = now;
+                screenshotsScroll.scrollLeft = scrollStart - (e.pageX - startX);
+            });
+
+            window.addEventListener('mouseup', () => {
+                if (!isDown) return;
+                isDown = false;
+                screenshotsScroll.classList.remove('is-dragging');
+                startMomentum();
+            });
+
+            screenshotsScroll.addEventListener('wheel', (e) => {
+                if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+                    e.preventDefault();
+                    stopMomentum();
+                    screenshotsScroll.scrollLeft += e.deltaY * 1.4;
+                }
+            }, { passive: false });
+        }
 
         function formatVersion(tag) {
             if (!tag) return "v1.5";
