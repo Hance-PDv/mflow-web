@@ -139,16 +139,11 @@
             border-radius: 14px;
             opacity: 0;
             transform: translateY(10px) scale(0.98);
-            transition: opacity 0.55s ease, transform 0.55s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+            transition: opacity 0.55s ease, transform 0.55s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.25s ease, background 0.25s ease;
         }
         .stats-pill.visible {
             opacity: 1;
             transform: translateY(0) scale(1);
-        }
-        .stats-pill.pulse {
-            border-color: rgba(59, 130, 246, 0.55);
-            background: rgba(59, 130, 246, 0.08);
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.22);
         }
         .stats-pill:hover {
             border-color: rgba(59, 130, 246, 0.35);
@@ -180,39 +175,11 @@
             font-variant-numeric: tabular-nums;
             letter-spacing: -0.3px;
             line-height: 1.15;
-            transition: transform 0.25s ease, color 0.25s ease;
-        }
-        .stats-pill.pulse .stats-value {
-            color: #60a5fa;
-        }
-        .stats-label-row {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
         }
         .stats-label {
             font-size: 11.5px;
             color: var(--text-secondary);
             line-height: 1.2;
-        }
-        .live-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background-color: #22c55e;
-            box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6);
-            animation: livePulse 2.2s infinite;
-        }
-        @keyframes livePulse {
-            0% {
-                box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.65);
-            }
-            70% {
-                box-shadow: 0 0 0 6px rgba(34, 197, 94, 0);
-            }
-            100% {
-                box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
-            }
         }
         hr {
             border: 0;
@@ -427,10 +394,7 @@
                     </div>
                     <div class="stats-text">
                         <span id="totalDownloadsCount" class="stats-value">0</span>
-                        <span class="stats-label-row">
-                            <span class="live-dot" aria-hidden="true"></span>
-                            <span class="stats-label">Downloads</span>
-                        </span>
+                        <span class="stats-label">Downloads</span>
                     </div>
                 </div>
             </div>
@@ -548,13 +512,6 @@
         const totalDownloadsCountEl = document.getElementById('totalDownloadsCount');
         const screenshotsScroll = document.getElementById('screenshotsScroll');
         const CACHE_KEY_DOWNLOADS = 'nox_sound_total_downloads_v1';
-        const RELEASES_API_URL = 'https://api.github.com/repos/Hance-PDv/Nox_sound/releases?per_page=100';
-        const LIVE_POLL_INTERVAL_MS = 30000;
-
-        let displayedDownloads = 0;
-        let counterAnimFrame = null;
-        let isFetchingReleases = false;
-        let hasRenderedInitial = false;
 
         if (screenshotsScroll) {
             let isDown = false;
@@ -640,54 +597,32 @@
             return d.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
         }
 
-        function animateDownloadCounter(targetTotal, isLiveUpdate = false) {
+        function animateDownloadCounter(targetTotal) {
             if (!downloadsStatsPill || !totalDownloadsCountEl) return;
             const finalValue = Math.max(0, Math.floor(Number(targetTotal) || 0));
 
-            downloadsStatsPill.style.display = 'inline-flex';
             requestAnimationFrame(() => {
                 downloadsStatsPill.classList.add('visible');
             });
 
-            if (isLiveUpdate && finalValue === displayedDownloads) {
-                return;
-            }
-
-            if (isLiveUpdate && finalValue > displayedDownloads) {
-                downloadsStatsPill.classList.add('pulse');
-                setTimeout(() => {
-                    downloadsStatsPill.classList.remove('pulse');
-                }, 900);
-            }
-
-            if (counterAnimFrame) {
-                cancelAnimationFrame(counterAnimFrame);
-                counterAnimFrame = null;
-            }
-
-            const startValue = displayedDownloads;
-            const diff = finalValue - startValue;
-            const duration = isLiveUpdate ? 750 : 1400;
+            const duration = 1400;
             const startTime = performance.now();
 
             function step(now) {
                 const elapsed = now - startTime;
                 const progress = Math.min(elapsed / duration, 1);
                 const eased = 1 - Math.pow(1 - progress, 4);
-                const current = Math.round(startValue + diff * eased);
-                displayedDownloads = current;
+                const current = Math.round(eased * finalValue);
                 totalDownloadsCountEl.textContent = current.toLocaleString('en-US');
 
                 if (progress < 1) {
-                    counterAnimFrame = requestAnimationFrame(step);
+                    requestAnimationFrame(step);
                 } else {
-                    displayedDownloads = finalValue;
                     totalDownloadsCountEl.textContent = finalValue.toLocaleString('en-US');
-                    counterAnimFrame = null;
                 }
             }
 
-            counterAnimFrame = requestAnimationFrame(step);
+            requestAnimationFrame(step);
         }
 
         function calculateTotalDownloads(releases) {
@@ -739,89 +674,56 @@
             }).join("");
         }
 
-        function fetchReleasesData(isLivePoll = false) {
-            if (isFetchingReleases) return;
-            isFetchingReleases = true;
+        fetch('https://api.github.com/repos/Hance-PDv/Nox_sound/releases?per_page=100')
+            .then(response => {
+                if (!response.ok) throw new Error('Releases fetch failed');
+                return response.json();
+            })
+            .then(releases => {
+                const validReleases = Array.isArray(releases)
+                    ? releases.filter(r => r && !r.draft && !r.prerelease)
+                    : [];
 
-            fetch(RELEASES_API_URL, { cache: 'no-cache' })
-                .then(response => {
-                    if (!response.ok) throw new Error('Releases fetch failed');
-                    return response.json();
-                })
-                .then(releases => {
-                    const validReleases = Array.isArray(releases)
-                        ? releases.filter(r => r && !r.draft && !r.prerelease)
-                        : [];
+                const totalDownloads = calculateTotalDownloads(validReleases);
+                try {
+                    localStorage.setItem(CACHE_KEY_DOWNLOADS, JSON.stringify({
+                        total: totalDownloads
+                    }));
+                } catch (e) {}
 
-                    const totalDownloads = calculateTotalDownloads(validReleases);
-                    try {
-                        localStorage.setItem(CACHE_KEY_DOWNLOADS, JSON.stringify({
-                            total: totalDownloads
-                        }));
-                    } catch (e) {}
+                animateDownloadCounter(totalDownloads);
 
-                    animateDownloadCounter(totalDownloads, hasRenderedInitial);
-                    hasRenderedInitial = true;
-
-                    if (validReleases.length > 0) {
-                        const latest = validReleases[0];
-                        const latestVersion = formatVersion(latest.tag_name);
-                        if (downloadBtnVersion) {
-                            downloadBtnVersion.textContent = latestVersion;
-                        }
-
-                        if (Array.isArray(latest.assets) && latest.assets.length > 0) {
-                            const apkAsset = latest.assets.find(a => a && a.name && a.name.toLowerCase().endsWith('.apk')) || latest.assets[0];
-                            downloadBtn.href = apkAsset.browser_download_url || fallbackUrl;
-                            downloadBtn.setAttribute('download', apkAsset.name || `nox_sound_${latestVersion}.apk`);
-                            const sizeText = formatSizeMb(apkAsset.size);
-                            versionMeta.innerText = sizeText ? `Android APK • ${sizeText}` : "Android APK • Latest Release";
-                        }
-
-                        renderPreviousReleases(validReleases, latest.tag_name);
+                if (validReleases.length > 0) {
+                    const latest = validReleases[0];
+                    const latestVersion = formatVersion(latest.tag_name);
+                    if (downloadBtnVersion) {
+                        downloadBtnVersion.textContent = latestVersion;
                     }
-                })
-                .catch(() => {
-                    if (!hasRenderedInitial) {
-                        downloadBtn.href = fallbackUrl;
-                        try {
-                            const cached = JSON.parse(localStorage.getItem(CACHE_KEY_DOWNLOADS) || 'null');
-                            if (cached && typeof cached.total === 'number') {
-                                animateDownloadCounter(cached.total, false);
-                                hasRenderedInitial = true;
-                                return;
-                            }
-                        } catch (e) {}
-                        if (downloadsStatsPill) {
-                            downloadsStatsPill.style.display = 'none';
-                        }
+
+                    if (Array.isArray(latest.assets) && latest.assets.length > 0) {
+                        const apkAsset = latest.assets.find(a => a && a.name && a.name.toLowerCase().endsWith('.apk')) || latest.assets[0];
+                        downloadBtn.href = apkAsset.browser_download_url || fallbackUrl;
+                        downloadBtn.setAttribute('download', apkAsset.name || `nox_sound_${latestVersion}.apk`);
+                        const sizeText = formatSizeMb(apkAsset.size);
+                        versionMeta.innerText = sizeText ? `Android APK • ${sizeText}` : "Android APK • Latest Release";
                     }
-                })
-                .finally(() => {
-                    isFetchingReleases = false;
-                });
-        }
 
-        fetchReleasesData(false);
-
-        setInterval(() => {
-            if (!document.hidden) {
-                fetchReleasesData(true);
-            }
-        }, LIVE_POLL_INTERVAL_MS);
-
-        document.addEventListener('visibilitychange', () => {
-            if (!document.hidden) {
-                fetchReleasesData(true);
-            }
-        });
-
-        document.addEventListener('click', (e) => {
-            const link = e.target.closest('#downloadBtn, .version-dl-btn');
-            if (link) {
-                setTimeout(() => fetchReleasesData(true), 4500);
-            }
-        });
+                    renderPreviousReleases(validReleases, latest.tag_name);
+                }
+            })
+            .catch(() => {
+                downloadBtn.href = fallbackUrl;
+                try {
+                    const cached = JSON.parse(localStorage.getItem(CACHE_KEY_DOWNLOADS) || 'null');
+                    if (cached && typeof cached.total === 'number') {
+                        animateDownloadCounter(cached.total);
+                        return;
+                    }
+                } catch (e) {}
+                if (downloadsStatsPill) {
+                    downloadsStatsPill.style.display = 'none';
+                }
+            });
     </script>
 </body>
 </html>
